@@ -11,23 +11,21 @@ var Acl = function () {
 
   _createClass(Acl, [{
     key: 'init',
-    value: function init(router, permission, store) {
+    value: function init(router, permission) {
       this.router = router;
-      this._store = store;
-      this._store.state.acl_current = permission;
     }
   }, {
     key: 'check',
     value: function check(permission) {
-      if (Array.isArray(permission)) return permission.indexOf(this._store.state.acl_current) !== -1 ? true : false;else return this._store.state.acl_current == permission;
+      if (Array.isArray(permission)) return permission.indexOf(sessionStorage.getItem('acl_current')) !== -1 ? true : false;else return sessionStorage.getItem('acl_current') == permission;
     }
   }, {
     key: 'active',
     set: function set(active) {
-      this._store.state.acl_current = active || null;
+      sessionStorage.setItem('acl_current', active || null);
     },
     get: function get() {
-      return this._store.state.acl_current;
+      return sessionStorage.getItem('acl_current');
     }
   }, {
     key: 'router',
@@ -50,9 +48,8 @@ var acl = new Acl();
 Acl.install = function (Vue, _ref) {
   var router = _ref.router,
       d_permission = _ref.d_permission,
-      store = _ref.store;
 
-  acl.init(router, d_permission, store);
+  acl.init(router, d_permission);
 
   Vue.prototype.can = function (permission) {
     permission = permission.indexOf('.') !== -1 ? permission.split('.') : permission;
