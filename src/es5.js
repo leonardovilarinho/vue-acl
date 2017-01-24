@@ -11,21 +11,23 @@ var Acl = function () {
 
   _createClass(Acl, [{
     key: 'init',
-    value: function init(router, permission) {
+    value: function init(router, permission, store) {
       this.router = router;
+      this._store = store;
+      this._store.state.acl_current = permission;
     }
   }, {
     key: 'check',
     value: function check(permission) {
-      if (Array.isArray(permission)) return permission.indexOf(sessionStorage.getItem('acl_current')) !== -1 ? true : false;else return sessionStorage.getItem('acl_current') == permission;
+      if (Array.isArray(permission)) return permission.indexOf(this._store.state.acl_current) !== -1 ? true : false;else return this._store.state.acl_current == permission;
     }
   }, {
     key: 'active',
     set: function set(active) {
-      sessionStorage.setItem('acl_current', active || null);
+      this._store.state.acl_current = active || null;
     },
     get: function get() {
-      return sessionStorage.getItem('acl_current');
+      return this._store.state.acl_current;
     }
   }, {
     key: 'router',
@@ -33,9 +35,11 @@ var Acl = function () {
       var _this = this;
 
       router.beforeEach(function (to, from, next) {
-        var permission = to.meta.permission.indexOf('.') !== -1 ? to.meta.permission.split('.') : to.meta.permission;
-        if (!_this.check(permission)) return false;
-        next();
+        if (typeof to.meta.permission == 'undefined') return false;else {
+          var permission = to.meta.permission.indexOf('.') !== -1 ? to.meta.permission.split('.') : to.meta.permission;
+          if (!_this.check(permission)) return false;
+          next();
+        }
       });
     }
   }]);
@@ -48,11 +52,12 @@ var acl = new Acl();
 Acl.install = function (Vue, _ref) {
   var router = _ref.router,
       d_permission = _ref.d_permission,
+      store = _ref.store;
 
-  acl.init(router, d_permission);
+  acl.init(router, d_permission, store);
 
   Vue.prototype.can = function (permission) {
-    permission = permission.indexOf('.') !== -1 ? permission.split('.') : permission;
+    if (typeof to.meta.permission != 'undefined') permission = permission.indexOf('.') !== -1 ? permission.split('.') : permission;
     return acl.check(permission);
   };
 
