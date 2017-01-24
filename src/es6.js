@@ -43,7 +43,7 @@ Acl.install = function(Vue, {router, d_permission, store}) {
 	acl.init(router, d_permission, store)
 
 	Vue.prototype.can = function(permission) {
-		if(typeof to.meta.permission != 'undefined')
+		if(typeof permission != 'undefined')
 			permission = (permission.indexOf('.') !== -1) ? permission.split('.') : permission
 		return acl.check(permission)
 	}
