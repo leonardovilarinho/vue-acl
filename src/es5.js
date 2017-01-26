@@ -14,7 +14,12 @@ var Acl = function () {
     value: function init(router, permission, store) {
       this.router = router;
       this._store = store;
-      this._store.state.acl_current = permission;
+      if (sessionStorage.getItem('acl_current') == null) {
+        sessionStorage.setItem('acl_current', permission);
+        this._store.state.acl_current = permission;
+      } else {
+        this._store.state.acl_current = sessionStorage.getItem('acl_current');
+      }
     }
   }, {
     key: 'check',
@@ -24,7 +29,8 @@ var Acl = function () {
   }, {
     key: 'active',
     set: function set(active) {
-      this._store.state.acl_current = active || null;
+      sessionStorage.setItem('acl_current', active || null);
+      this._store.state.acl_current = sessionStorage.getItem('acl_current');
     },
     get: function get() {
       return this._store.state.acl_current;
