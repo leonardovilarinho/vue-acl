@@ -68,3 +68,5 @@ To change the current system permission use the global method `checkPermission()
 ### Contributing
 
 To help in the development and expansion of this repository take a FORK to your account, after you have made your modifications do a PULL REQUEST, it will be parsed and included here since it helps the plugin.
+
+If you prefer, write code to ES5 ES6 and transpile it using the Babel.
