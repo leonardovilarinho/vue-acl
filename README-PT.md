@@ -70,3 +70,9 @@ Para trocar a permissão atual do sistema use o método global `checkPermission(
 Para ajudar no desenvolvimento e expansão desse plugin faça um FORK do repositório na sua conta do GitHub, quando realizar as modificações faça um PULL REQUEST, iremos analisar se houve uma melhoria com a modificaçao, se sim então elas estará presente aqui.
 
 Caso prefira, escreva o código ES6 e transpile ele para ES5 usando o Babel.
+
+Dependências do node precisam ser escritas em ES5, mas optei por escrever o plugin em ES6, usando então o Babel para converter o código:
+
+  npm run transpile
+
+*Certifique-se de ter o babel-cli instalado globalmente*
