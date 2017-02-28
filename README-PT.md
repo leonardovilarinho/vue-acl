@@ -68,3 +68,5 @@ Para trocar a permissão atual do sistema use o método global `checkPermission(
 
 
 Para ajudar no desenvolvimento e expansão desse plugin faça um FORK do repositório na sua conta do GitHub, quando realizar as modificações faça um PULL REQUEST, iremos analisar se houve uma melhoria com a modificaçao, se sim então elas estará presente aqui.
+
+Caso prefira, escreva o código ES6 e transpile ele para ES5 usando o Babel.
