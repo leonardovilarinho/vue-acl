@@ -40,13 +40,14 @@ To install just copy the file src/Acl.js to your plugins directory.
     Vue.use( Acl, { router: Router, d_permission: 'any', store: Store } )
 
 
-**[3]:** Add metadata in their routes the system needs have currently to call that route, use dot (.) to separate permissions:
+**[3]:** Add metadata in their routes saying which permission required to access the route, use dot (.) to separate more than one permission, other metadata used is the ' fail ', which will indicate which route to redirect on error:
 
-	export default [
-	  { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any' } },
-	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin' } }
-	]
+  export default [
+    { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
+    { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
+    { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
+  ]
+
 
 
 
