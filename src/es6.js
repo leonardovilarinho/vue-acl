@@ -12,7 +12,7 @@ class Acl {
 			this._store.state.acl_current = sessionStorage.getItem('acl_current')
 		}
 
-
+		
 	}
 
 	check(permission) {
@@ -33,13 +33,12 @@ class Acl {
 
 	set router(router) {
 		router.beforeEach((to, from, next) => {
-			const switchTo = to.meta.switchTo || false
 			if(typeof to.meta.permission == 'undefined')
-				return next(switchTo)
+				return false
 			else {
 				let permission = (to.meta.permission.indexOf('.') !== -1) ? to.meta.permission.split('.') : to.meta.permission
 				if(!this.check(permission))
-					return next(switchTo)
+					return false
 				next()
 			}
 		})
