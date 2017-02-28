@@ -73,6 +73,6 @@ Caso prefira, escreva o código ES6 e transpile ele para ES5 usando o Babel.
 
 Dependências do node precisam ser escritas em ES5, mas optei por escrever o plugin em ES6, usando então o Babel para converter o código:
 
-  npm run transpile
+    npm run transpile
 
 *Certifique-se de ter o babel-cli instalado globalmente*

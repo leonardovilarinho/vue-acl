@@ -1,0 +1,89 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'publish' ]
+2 info using npm@4.1.2
+3 info using node@v7.5.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: 'D:\\Projetos\\PHP\\public\\vue\\vue-acl',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package.tgz not in flight; packing
+9 verbose correctMkdir C:\Users\leona\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+10 info lifecycle vue-acl@1.0.10~prepublish: vue-acl@1.0.10
+11 silly lifecycle vue-acl@1.0.10~prepublish: no script for prepublish, continuing
+12 info lifecycle vue-acl@1.0.10~prepare: vue-acl@1.0.10
+13 silly lifecycle vue-acl@1.0.10~prepare: no script for prepare, continuing
+14 verbose tar pack [ 'C:\\Users\\leona\\AppData\\Roaming\\npm-cache\\vue-acl\\1.0.10\\package.tgz',
+14 verbose tar pack   'D:\\Projetos\\PHP\\public\\vue\\vue-acl' ]
+15 verbose tarball C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package.tgz
+16 verbose folder D:\Projetos\PHP\public\vue\vue-acl
+17 verbose addLocalTarball adding from inside cache C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package.tgz
+18 verbose correctMkdir C:\Users\leona\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+19 silly cache afterAdd vue-acl@1.0.10
+20 verbose afterAdd C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package\package.json not in flight; writing
+21 verbose correctMkdir C:\Users\leona\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+22 verbose afterAdd C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package\package.json written
+23 silly publish { name: 'vue-acl',
+23 silly publish   version: '1.0.10',
+23 silly publish   description: 'Plugin of Access Control List from Vue JS 2',
+23 silly publish   main: 'src/es5.js',
+23 silly publish   scripts: { transpile: 'babel ./src/es6.js --out-file ./src/es5.js' },
+23 silly publish   repository:
+23 silly publish    { type: 'git',
+23 silly publish      url: 'git+https://github.com/leonardovilarinho/vue-acl.git' },
+23 silly publish   keywords: [ 'acl', 'vuejs', 'control', 'user' ],
+23 silly publish   author: { name: 'Leonardo Vilarinho' },
+23 silly publish   license: 'ISC',
+23 silly publish   bugs: { url: 'https://github.com/leonardovilarinho/vue-acl/issues' },
+23 silly publish   homepage: 'https://github.com/leonardovilarinho/vue-acl#readme',
+23 silly publish   readme: '# Plugin of Access Control List from Vue JS 2\r\n\r\n>This plugin aims to control the layout of the system and block access to certain routes of the vue-router, that according to the current active permission on the system.\r\n\r\n### Dependencies:\r\n- VueJS version 2\r\n- vue-router\r\n- Vuex version 2\r\n\r\n### Installation\r\n\r\nWe have two methods of installed, you can use the npm or a standalone.\r\n\r\n#### To install with NPM\r\n\r\nUse the following command to install as dependency:\r\n\r\n    npm install vue-acl --save\r\n\r\n#### For standalone installation\r\n\r\nTo install just copy the file src/Acl.js to your plugins directory.\r\n\r\n### Get Started:\r\n\r\n**[1]:** The state of your Vuex set a variable called `acl_current`, it defines what the current permission on your system.:\r\n\r\n    ...\r\n  \tstate: {\r\n  \t  acl_current: \'\'\r\n  \t}\r\n    ...\r\n\r\n**[2]:** Import the plugin and register it on VueJS, it is necessary to send as a parameter the vue router-router, the default system permission and store the Vuex:\r\n\r\n\r\n    import Store from \'../vuex/store\'\r\n    import Router from \'../routes/router\'\r\n    import Acl from \'vue-acl\'\r\n    Vue.use( Acl, { router: Router, d_permission: \'any\', store: Store } )\r\n\r\n\r\n**[3]:** Add metadata in their routes saying which permission required to access the route, use dot (.) to separate more than one permission, other metadata used is the \' fail \', which will indicate which route to redirect on error:\r\n\r\n  export default [\r\n    { path: \'/\'                   , component: Example              , meta: { permission: \'admin.any\' } },\r\n    { path: \'/resource\'           , component: Resource             , meta: { permission: \'admin.any\', fail: \'/\' } },\r\n    { path: \'/vuex\'               , component: Vuex                 , meta: { permission: \'admin\', fail: \'/\' } }\r\n  ]\r\n\r\n\r\n\r\n\r\n**[4]:** The components use the global method `can()` to verify that the system gives access to permission passed by parameter:\r\n\r\n\t<router-link v-show=\'can("admin.any")\' to=\'/\'>Router test</router-link> |\r\n\t<router-link v-show=\'can("admin.any")\' to=\'/resource\'>Resource test</router-link> |\r\n\t<router-link v-show=\'can("admin")\' to=\'/vuex\'>Vuex test</router-link>\r\n\r\nThis method receives a parameter with the permissions to check, separated by a dot (.), and returns a `bool` saying if permission has been granted.\r\n\r\nTo change the current system permission use the global method `checkPermission()`, passing as parameter the new permission:\r\n\r\n\tthis.changeAccess(\'admin\')\r\n\r\n**NOTE:** This method is a shortcut for `$store.state.acl_current`\r\n\r\n### Contributing\r\n\r\nTo help in the development and expansion of this repository take a FORK to your account, after you have made your modifications do a PULL REQUEST, it will be parsed and included here since it helps the plugin.\r\n\r\nIf you prefer, write code to ES5 ES6 and transpile it using the Babel.\r\n\r\nNode dependencies need to be written in ES5, but chose to write the plugin in ES6, using so the Babel to convert the code:\r\n\r\n  npm run transpile\r\n\r\n*Be sure to have the babel-cli installed globally*',
+23 silly publish   readmeFilename: 'README.md',
+23 silly publish   gitHead: 'ca97846a39e54981ac74a69a4ce96f2bb89110a7',
+23 silly publish   _id: 'vue-acl@1.0.10',
+23 silly publish   _shasum: '137a1fe3b66bb3edbe3f921953d2a6976b03e54d',
+23 silly publish   _from: '.' }
+24 info lifecycle vue-acl@1.0.10~prepublishOnly: vue-acl@1.0.10
+25 silly lifecycle vue-acl@1.0.10~prepublishOnly: no script for prepublishOnly, continuing
+26 verbose getPublishConfig undefined
+27 silly mapToRegistry name vue-acl
+28 silly mapToRegistry using default registry
+29 silly mapToRegistry registry https://registry.npmjs.org/
+30 silly mapToRegistry data Result {
+30 silly mapToRegistry   raw: 'vue-acl',
+30 silly mapToRegistry   scope: null,
+30 silly mapToRegistry   escapedName: 'vue-acl',
+30 silly mapToRegistry   name: 'vue-acl',
+30 silly mapToRegistry   rawSpec: '',
+30 silly mapToRegistry   spec: 'latest',
+30 silly mapToRegistry   type: 'tag' }
+31 silly mapToRegistry uri https://registry.npmjs.org/vue-acl
+32 verbose publish registryBase https://registry.npmjs.org/
+33 silly publish uploading C:\Users\leona\AppData\Roaming\npm-cache\vue-acl\1.0.10\package.tgz
+34 verbose stack Error: auth required for publishing
+34 verbose stack     at CachingRegistryClient.publish (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\publish.js:30:14)
+34 verbose stack     at C:\Program Files\nodejs\node_modules\npm\lib\publish.js:137:14
+34 verbose stack     at mapToRegistry (C:\Program Files\nodejs\node_modules\npm\lib\utils\map-to-registry.js:62:3)
+34 verbose stack     at publish_ (C:\Program Files\nodejs\node_modules\npm\lib\publish.js:108:3)
+34 verbose stack     at Array.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\slide\lib\bind-actor.js:15:8)
+34 verbose stack     at LOOP (C:\Program Files\nodejs\node_modules\npm\node_modules\slide\lib\chain.js:15:14)
+34 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\slide\lib\chain.js:18:7
+34 verbose stack     at done (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:132:5)
+34 verbose stack     at LOOP (C:\Program Files\nodejs\node_modules\npm\node_modules\slide\lib\chain.js:7:26)
+34 verbose stack     at C:\Program Files\nodejs\node_modules\npm\node_modules\slide\lib\chain.js:18:7
+35 verbose cwd D:\Projetos\PHP\public\vue\vue-acl
+36 error Windows_NT 10.0.14393
+37 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "publish"
+38 error node v7.5.0
+39 error npm  v4.1.2
+40 error code ENEEDAUTH
+41 error need auth auth required for publishing
+42 error need auth You need to authorize this machine using `npm adduser`
+43 verbose exit [ 1, true ]
