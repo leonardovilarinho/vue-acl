@@ -42,25 +42,25 @@ Copie o arquivo `src/Acl.js` para seu diretório de plugins.
 
 **[3]:** Adicione um metadado nas suas rotas dizendo qual permissão necessária para acessar a rota, use ponto (.) para separar mais de uma permissão, outro metadado usado é o `fail`, que indicará para qual rota redirecionar em caso de erro:
 
-	export default [
-	  { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
-	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
-	]
+  	export default [
+  	  { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
+  	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
+  	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
+  	]
 
 
 
 **[4]:** Nos componentes use o metodo global `can()` para definir se determinada permissão é compatível com a atualmente ativa:
 
-	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
-	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
-	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
+  	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
+  	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
+  	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
 
 Esse método recebe como parâmetro uma string com as permissões que você quer checar, quando mais de uma use ponto (.) para separa-las, o retorno será um `bool` mostrando se você tem ou não a permissão certa.
 
 Para trocar a permissão atual do sistema use o método global `checkPermission()`, passando como parametro a nova permissão do sistema:
 
-	this.changeAccess('admin')
+	 this.changeAccess('admin')
 
 **NOTE:** Esse método é um atalho para a variável `$store.state.acl_current`
 

@@ -42,26 +42,26 @@ To install just copy the file src/Acl.js to your plugins directory.
 
 **[3]:** Add metadata in their routes saying which permission required to access the route, use dot (.) to separate more than one permission, other metadata used is the ' fail ', which will indicate which route to redirect on error:
 
-  export default [
-    { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-    { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
-    { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
-  ]
+    export default [
+      { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
+      { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
+      { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
+    ]
 
 
 
 
 **[4]:** The components use the global method `can()` to verify that the system gives access to permission passed by parameter:
 
-	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
-	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
-	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
+  	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
+  	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
+  	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
 
 This method receives a parameter with the permissions to check, separated by a dot (.), and returns a `bool` saying if permission has been granted.
 
 To change the current system permission use the global method `checkPermission()`, passing as parameter the new permission:
 
-	this.changeAccess('admin')
+	 this.changeAccess('admin')
 
 **NOTE:** This method is a shortcut for `$store.state.acl_current`
 
