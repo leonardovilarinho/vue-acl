@@ -71,3 +71,8 @@ To help in the development and expansion of this repository take a FORK to your 
 
 If you prefer, write code to ES5 ES6 and transpile it using the Babel.
 
+Node dependencies need to be written in ES5, but chose to write the plugin in ES6, using so the Babel to convert the code:
+
+  npm run transpile
+
+*Be sure to have the babel-cli installed globally*
