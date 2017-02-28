@@ -40,12 +40,12 @@ Copie o arquivo `src/Acl.js` para seu diretório de plugins.
     Vue.use( Acl, { router: Router, d_permission: 'any', store: Store } )
 
 
-**[3]:** Adicione um metadado nas suas rotas dizendo qual permissão necessária para acessar a rota, use ponto (.) para separar mais de uma permissão:
+**[3]:** Adicione um metadado nas suas rotas dizendo qual permissão necessária para acessar a rota, use ponto (.) para separar mais de uma permissão, outro metadado usado é o `fail`, que indicará para qual rota redirecionar em caso de erro:
 
 	export default [
 	  { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any' } },
-	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin' } }
+	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
+	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
 	]
 
 
