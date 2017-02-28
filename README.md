@@ -19,7 +19,7 @@ Use the following command to install as dependency:
 
 #### For standalone installation
 
-To install just copy the file src/Acl.js to your plugins directory.
+To install just copy the file `src/es6.js` to your plugins directory.
 
 ### Get Started:
 
