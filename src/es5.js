@@ -1,56 +1,67 @@
 "use strict";
 
-class Acl {
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-	init(router, permission, store) {
-		this.router = router;
-		this._store = store;
-		if (sessionStorage.getItem('acl_current') == null) {
-			sessionStorage.setItem('acl_current', permission);
-			this._store.state.acl_current = permission;
-		} else {
-			this._store.state.acl_current = sessionStorage.getItem('acl_current');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Acl = function () {
+	function Acl() {
+		_classCallCheck(this, Acl);
+	}
+
+	_createClass(Acl, [{
+		key: 'init',
+		value: function init(router, permission) {
+			this.router = router;
+			this.permission = permission;
 		}
-	}
+	}, {
+		key: 'check',
+		value: function check(permission) {
+			if (typeof permission != 'undefined') permission = permission.indexOf('|') !== -1 ? permission.split('|') : permission;
 
-	check(permission) {
-		if (Array.isArray(permission)) return permission.indexOf(this._store.state.acl_current) !== -1 ? true : false;else return this._store.state.acl_current == permission;
-	}
+			if (Array.isArray(permission)) return permission.indexOf(this.permission) !== -1 ? true : false;else return this.permission == permission;
+		}
+	}, {
+		key: 'router',
+		set: function set(router) {
+			var _this = this;
 
-	set active(active) {
-		sessionStorage.setItem('acl_current', active || null);
-		this._store.state.acl_current = sessionStorage.getItem('acl_current');
-	}
+			router.beforeEach(function (to, from, next) {
+				var fail = to.meta.fail || '/';
+				if (typeof to.meta.permission == 'undefined') return next(fail);else {
+					if (!_this.check(to.meta.permission)) return next(fail);
+					next();
+				}
+			});
+		}
+	}]);
 
-	get active() {
-		return this._store.state.acl_current;
-	}
+	return Acl;
+}();
 
-	set router(router) {
-		router.beforeEach((to, from, next) => {
-			const fail = to.meta.fail || false;
-			if (typeof to.meta.permission == 'undefined') return next(fail);else {
-				let permission = to.meta.permission.indexOf('.') !== -1 ? to.meta.permission.split('.') : to.meta.permission;
-				if (!this.check(permission)) return next(fail);
-				next();
-			}
-		});
-	}
-}
+var acl = new Acl();
 
-let acl = new Acl();
+Acl.install = function (Vue, _ref) {
+	var router = _ref.router,
+	    init = _ref.init;
 
-Acl.install = function (Vue, { router, d_permission, store }) {
-	acl.init(router, d_permission, store);
 
-	Vue.prototype.can = function (permission) {
-		if (typeof permission != 'undefined') permission = permission.indexOf('.') !== -1 ? permission.split('.') : permission;
+	acl.init(router, init);
+
+	Vue.prototype.$can = function (permission) {
 		return acl.check(permission);
 	};
 
-	Vue.prototype.changeAccess = function (newAccess) {
-		acl.active = newAccess;
+	Vue.prototype.$access = function () {
+		var newAccess = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+		if (newAccess != null) acl.permission = newAccess;else return acl.permission;
 	};
 };
 
-export default Acl;
+exports.default = Acl;

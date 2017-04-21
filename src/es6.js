@@ -2,43 +2,29 @@
 
 class Acl {
 
-	init(router, permission, store) {
+	init(router, permission) {
 		this.router = router
-		this._store = store
-		if(sessionStorage.getItem('acl_current') == null) {
-			sessionStorage.setItem('acl_current', permission)
-			this._store.state.acl_current = permission
-		} else {
-			this._store.state.acl_current = sessionStorage.getItem('acl_current')
-		}
-
-
+		this.permission = permission
 	}
 
 	check(permission) {
+		if(typeof permission != 'undefined')
+			permission = (permission.indexOf('|') !== -1) ? permission.split('|') : permission
+
 		if(Array.isArray(permission))
-			return (permission.indexOf(this._store.state.acl_current) !== -1) ? true : false
+			return (permission.indexOf(this.permission) !== -1) ? true : false
 		else
-			return this._store.state.acl_current == permission
+			return this.permission == permission
 	}
 
-	set active(active) {
-		sessionStorage.setItem('acl_current', active || null)
-		this._store.state.acl_current = sessionStorage.getItem('acl_current')
-	}
-
-	get active() {
-		return this._store.state.acl_current
-	}
 
 	set router(router) {
 		router.beforeEach((to, from, next) => {
-			const fail = to.meta.fail || false
+			const fail = to.meta.fail || '/'
 			if(typeof to.meta.permission == 'undefined')
 				return next(fail)
 			else {
-				let permission = (to.meta.permission.indexOf('.') !== -1) ? to.meta.permission.split('.') : to.meta.permission
-				if(!this.check(permission))
+				if(!this.check(to.meta.permission))
 					return next(fail)
 				next()
 			}
@@ -48,19 +34,20 @@ class Acl {
 
 let acl = new Acl()
 
-Acl.install = function(Vue, {router, d_permission, store}) {
-	acl.init(router, d_permission, store)
+Acl.install = function(Vue, {router, init}) {
 
-	Vue.prototype.can = function(permission) {
-		if(typeof permission != 'undefined')
-			permission = (permission.indexOf('.') !== -1) ? permission.split('.') : permission
+	acl.init(router, init)
+
+	Vue.prototype.$can = function(permission) {
 		return acl.check(permission)
 	}
 
-	Vue.prototype.changeAccess = function(newAccess) {
-		acl.active = newAccess
+	Vue.prototype.$access = function(newAccess = null) {
+		if(newAccess != null)
+			acl.permission = newAccess
+		else
+			return acl.permission
 	}
-
 }
 
 export default Acl

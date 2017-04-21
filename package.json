@@ -1,10 +1,9 @@
 {
   "name": "vue-acl",
-  "version": "1.0.10",
+  "version": "2.0.0",
   "description": "Plugin of Access Control List from Vue JS 2",
   "main": "src/es5.js",
   "scripts": {
-    "transpile": "babel ./src/es6.js --out-file ./src/es5.js",
     "demo": "cd demo && npm run dev",
     "demo:install": "cd demo && npm install"
   },
