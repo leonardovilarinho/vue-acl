@@ -4,7 +4,9 @@
   "description": "Plugin of Access Control List from Vue JS 2",
   "main": "src/es5.js",
   "scripts": {
-    "transpile": "babel ./src/es6.js --out-file ./src/es5.js"
+    "transpile": "babel ./src/es6.js --out-file ./src/es5.js",
+    "demo": "cd demo && npm run dev",
+    "demo:install": "cd demo && npm install"
   },
   "repository": {
     "type": "git",
