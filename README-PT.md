@@ -5,7 +5,6 @@
 ### Dependências:
 - VueJS versão 2
 - vue-router
-- Vuex versão 2
 
 ### Instalação
 
@@ -23,46 +22,55 @@ Copie o arquivo `src/es6.js` para seu diretório de plugins.
 
 ### Começando:
 
-**[1]:** Crie no state do Vuex uma variável chamada `acl_current`, ela definirá qual permissão está ativa atualmente no sistema:
 
-    ...
-  	state: {
-  	  acl_current: ''
-  	}
-    ...
+**[1]:** Importe e registe o plugin no VueJS, é necessário passar alguns parâmetros, o router do vue-router e uma permissão padrão para o sistema:
 
-**[2]:** Importe e registe o plugin no VueJS, é necessário passar algunas parâmetros, o router do vue-router, uma permissão padrão para o sistema e a store do Vuex:
-
-
-    import Store from '../vuex/store'
     import Router from '../routes/router'
     import Acl from 'vue-acl'
-    Vue.use( Acl, { router: Router, d_permission: 'any', store: Store } )
+    Vue.use( Acl, { router: Router, init: 'any' } )
 
 
-**[3]:** Adicione um metadado nas suas rotas dizendo qual permissão necessária para acessar a rota, use ponto (.) para separar mais de uma permissão, outro metadado usado é o `fail`, que indicará para qual rota redirecionar em caso de erro:
+**[2]:** Adicione um metadado nas suas rotas dizendo qual permissão necessária para acessar a rota, use pipe (|) para separar mais de uma permissão, outro metadado usado é o `fail`, que indicará para qual rota redirecionar em caso de erro:
 
-  	export default [
-  	  { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-  	  { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
-  	  { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
-  	]
+    [
+      {
+        path: '/',
+        component: require('./components/Public.vue'),
+        meta: {permission: 'admin|any', fail: '/error'}
+      },
+      {
+        path: '/manager',
+        component: require('./components/Manager.vue'),
+        meta: {permission: 'admin', fail: '/error'}
+      },
+      {
+        path: '/client',
+        component: require('./components/Client.vue'),
+        meta: {permission: 'any', fail: '/error'}
+      },
+      {
+        path: '/error',
+        component: require('./components/Error.vue'),
+        meta: {permission: 'admin|any'}
+      },
+    ]
 
 
 
-**[4]:** Nos componentes use o metodo global `can()` para definir se determinada permissão é compatível com a atualmente ativa:
+**[3]:** Nos componentes use o metodo global `$can()` para definir se determinada permissão é compatível com a atualmente ativa:
 
-  	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
-  	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
-  	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
+  	<router-link v-show='$can("any")' to='/client'>To client</router-link> |
+  	<router-link v-show='$can("admin")' to='/manager'>To manager</router-link> |
+  	<router-link v-show='$can("admin|any")' to='/'>To Public</router-link>
 
-Esse método recebe como parâmetro uma string com as permissões que você quer checar, quando mais de uma use ponto (.) para separa-las, o retorno será um `bool` mostrando se você tem ou não a permissão certa.
+Esse método recebe como parâmetro uma string com as permissões que você quer checar, quando mais de uma use pipe (|) para separa-las, o retorno será um `bool` mostrando se você tem ou não a permissão certa.
 
-Para trocar a permissão atual do sistema use o método global `checkPermission()`, passando como parametro a nova permissão do sistema:
+Para trocar a permissão atual do sistema use o método global `$access()`, passando como parametro a nova permissão do sistema:
 
-	 this.changeAccess('admin')
+	 this.$access('admin')
 
-**NOTE:** Esse método é um atalho para a variável `$store.state.acl_current`
+
+Para ver a permissão atual do sistema basta chamar o método `$access()` sem parâmetro.
 
 ### Contribuindo
 
@@ -73,6 +81,13 @@ Caso prefira, escreva o código ES6 e transpile ele para ES5 usando o Babel.
 
 Dependências do node precisam ser escritas em ES5, mas optei por escrever o plugin em ES6, usando então o Babel para converter o código:
 
-    npm run transpile
+https://babeljs.io/repl/
 
-*Certifique-se de ter o babel-cli instalado globalmente*
+### Demo
+Para instalar demonstração use:
+
+    npm run demo:install
+
+Para executar use:
+
+    npm run demo

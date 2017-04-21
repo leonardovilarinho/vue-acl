@@ -5,7 +5,6 @@
 ### Dependencies:
 - VueJS version 2
 - vue-router
-- Vuex version 2
 
 ### Installation
 
@@ -23,47 +22,55 @@ To install just copy the file `src/es6.js` to your plugins directory.
 
 ### Get Started:
 
-**[1]:** The state of your Vuex set a variable called `acl_current`, it defines what the current permission on your system.:
-
-    ...
-  	state: {
-  	  acl_current: ''
-  	}
-    ...
-
-**[2]:** Import the plugin and register it on VueJS, it is necessary to send as a parameter the vue router-router, the default system permission and store the Vuex:
+**[1]:** Import the plugin and register it on VueJS, it is necessary to send as a parameter the vue router-router and the default system permission:
 
 
-    import Store from '../vuex/store'
     import Router from '../routes/router'
     import Acl from 'vue-acl'
-    Vue.use( Acl, { router: Router, d_permission: 'any', store: Store } )
+    Vue.use( Acl, { router: Router, init: 'any' } )
 
 
-**[3]:** Add metadata in their routes saying which permission required to access the route, use dot (.) to separate more than one permission, other metadata used is the ' fail ', which will indicate which route to redirect on error:
+**[2]:** Add metadata in their routes saying which permission required to access the route, use pipe (|) to separate more than one permission, other metadata used is the ' fail ', which will indicate which route to redirect on error:
 
-    export default [
-      { path: '/'                   , component: Example              , meta: { permission: 'admin.any' } },
-      { path: '/resource'           , component: Resource             , meta: { permission: 'admin.any', fail: '/' } },
-      { path: '/vuex'               , component: Vuex                 , meta: { permission: 'admin', fail: '/' } }
+    [
+      {
+        path: '/',
+        component: require('./components/Public.vue'),
+        meta: {permission: 'admin|any', fail: '/error'}
+      },
+      {
+        path: '/manager',
+        component: require('./components/Manager.vue'),
+        meta: {permission: 'admin', fail: '/error'}
+      },
+      {
+        path: '/client',
+        component: require('./components/Client.vue'),
+        meta: {permission: 'any', fail: '/error'}
+      },
+      {
+        path: '/error',
+        component: require('./components/Error.vue'),
+        meta: {permission: 'admin|any'}
+      },
     ]
 
 
 
 
-**[4]:** The components use the global method `can()` to verify that the system gives access to permission passed by parameter:
+**[3]:** The components use the global method `$can()` to verify that the system gives access to permission passed by parameter:
 
-  	<router-link v-show='can("admin.any")' to='/'>Router test</router-link> |
-  	<router-link v-show='can("admin.any")' to='/resource'>Resource test</router-link> |
-  	<router-link v-show='can("admin")' to='/vuex'>Vuex test</router-link>
+    <router-link v-show='$can("any")' to='/client'>To client</router-link> |
+    <router-link v-show='$can("admin")' to='/manager'>To manager</router-link> |
+    <router-link v-show='$can("admin|any")' to='/'>To Public</router-link>
 
-This method receives a parameter with the permissions to check, separated by a dot (.), and returns a `bool` saying if permission has been granted.
+This method receives a parameter with the permissions to check, separated by a pipe (|), and returns a `bool` saying if permission has been granted.
 
-To change the current system permission use the global method `checkPermission()`, passing as parameter the new permission:
+To change the current system permission use the global method `$access()`, passing as parameter the new permission:
 
-	 this.changeAccess('admin')
+	 this.$access('admin')
 
-**NOTE:** This method is a shortcut for `$store.state.acl_current`
+To see the current system permission, just call the `$access()` method with no parameter.
 
 ### Contributing
 
@@ -73,6 +80,13 @@ If you prefer, write code ES5 and transpile to ES6 using the Babel.
 
 Node dependencies need to be written in ES5, but chose to write the plugin in ES6, using so the Babel to convert the code:
 
-    npm run transpile
+https://babeljs.io/repl/
 
-*Be sure to have the babel-cli installed globally*
+### Demo
+To install demo run:
+
+    npm run demo:install
+
+To execute, run:
+
+    npm run demo
