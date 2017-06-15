@@ -22,6 +22,16 @@ const routes = [
     meta: {permission: 'any', fail: '/error'}
   },
   {
+    path: '/edit-delete',
+    component: require('./components/EditDelete.vue'),
+    meta: {permission: 'edit&delete', fail: '/error'}
+  },
+  {
+    path: '/edit-delete-admin',
+    component: require('./components/EditDeleteAdmin.vue'),
+    meta: {permission: 'edit&delete|admin', fail: '/error'}
+  },
+  {
     path: '/error',
     component: require('./components/Error.vue'),
     meta: {permission: 'admin|any'}
