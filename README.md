@@ -30,7 +30,7 @@ import Acl from 'vue-acl'
 Vue.use( Acl, { router: Router, init: 'any' } )
 ```
 
-**[2]:** Add metadata in their routes saying which permission required to access the route, use pipe (|) to separate more than one permission, other metadata used is the ' fail ', which will indicate which route to redirect on error:
+**[2]:** Add metadata in their routes saying which permission, or group of permissions is required to access the route, use pipe (|) to do an OR check for more than one permission, use (&) to do an AND check for multiple permissions (these can be used in combination for more complex situations). Use the ' fail ' metadata to indicate which route to redirect on error:
 ```js
 [
   {
@@ -58,6 +58,16 @@ Vue.use( Acl, { router: Router, init: 'any' } )
     }
   },
   {
+    path: '/edit-delete',
+    component: require('./components/EditDelete.vue'),
+    meta: {permission: 'edit&delete', fail: '/error'}
+  },
+  {
+    path: '/edit-delete-admin',
+    component: require('./components/EditDeleteAdmin.vue'),
+    meta: {permission: 'edit&delete|admin', fail: '/error'}
+  },
+  {
     path: '/error',
     component: require('./components/Error.vue'),
     meta: {
@@ -74,13 +84,19 @@ Vue.use( Acl, { router: Router, init: 'any' } )
 <router-link v-show='$can("any")' to='/client'>To client</router-link> |
 <router-link v-show='$can("admin")' to='/manager'>To manager</router-link> |
 <router-link v-show='$can("admin|any")' to='/'>To Public</router-link>
+<router-link v-show='$can("edit&delete")' to='/'>To Edit and delete</router-link>
 ```
-This method receives a parameter with the permissions to check, separated by a pipe (|), and returns a `bool` saying if permission has been granted.
+This method receives a parameter with the permissions to check, separated by a pipe (|) or ampersand (&), and returns a `bool` saying if permission has been granted.
 
-To change the current system permission use the global method `$access()`, passing as parameter the new permission:
+To change the current system permission use the global method `$access()`, passing as parameter the new permission, or array of permissions:
 ```js
  this.$access('admin')
 ```
+or
+```js
+ this.$access(['edit', 'delete'])
+```
+
 To see the current system permission, just call the `$access()` method with no parameter.
 
 ### Contributing
