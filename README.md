@@ -92,9 +92,13 @@ To change the current system permission use the global method `$access()`, passi
 ```js
  this.$access('admin')
 ```
-or
+or:
 ```js
  this.$access(['edit', 'delete'])
+```
+or with & operator:
+```js
+ this.$access('edit&delete')
 ```
 
 To see the current system permission, just call the `$access()` method with no parameter.

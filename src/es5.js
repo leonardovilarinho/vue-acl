@@ -78,7 +78,12 @@ Acl.install = function (Vue, _ref) {
         var newAccess = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
         if (newAccess != null) {
-            if (Array.isArray(newAccess)) acl.permissions = newAccess;else acl.permissions = [newAccess];
+            if (Array.isArray(newAccess))
+                acl.permissions = newAccess;
+            else if (newAccess.indexOf('&') !== -1)
+                acl.permissions = newAccess.split('&')
+            else
+                acl.permissions = [newAccess];
         } else return acl.permissions;
     };
 };

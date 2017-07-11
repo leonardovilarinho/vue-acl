@@ -69,6 +69,13 @@ Para trocar a permissão atual do sistema use o método global `$access()`, pass
 
 	 this.$access('admin')
 
+Você pode definir múltiplas permissões ativos passando um array para o método:
+
+	 this.$access(['admin', 'write'])
+
+Ou usando o operador &:
+
+	 this.$access('admin&write')
 
 Para ver a permissão atual do sistema basta chamar o método `$access()` sem parâmetro.
 

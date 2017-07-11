@@ -54,6 +54,8 @@ Acl.install = function (Vue, {router, init}) {
         if (newAccess != null) {
             if (Array.isArray(newAccess))
                 acl.permissions = newAccess
+            else if (newAccess.indexOf('&') !== -1)
+                acl.permissions = newAccess.split('&')
             else
                 acl.permissions = [newAccess]
         }
