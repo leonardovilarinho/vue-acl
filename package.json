@@ -2,7 +2,7 @@
   "name": "vue-acl",
   "version": "2.1.10",
   "description": "Plugin of Access Control List from Vue JS 2",
-  "main": "src/es5.js",
+  "main": "src/es6.js",
   "scripts": {
     "demo": "cd demo && npm run dev",
     "demo:install": "cd demo && npm install"
