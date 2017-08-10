@@ -25,6 +25,8 @@ var Acl = function () {
             var _this = this;
 
             if (typeof permission != 'undefined') {
+                if(permission == '')
+                    return true
                 var permissions = permission.indexOf('|') !== -1 ? permission.split('|') : [permission];
 
                 return permissions.find(function (permission) {
