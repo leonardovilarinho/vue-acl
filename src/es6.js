@@ -9,6 +9,8 @@ class Acl {
 
     check(permission) {
         if (typeof permission != 'undefined') {
+            if(permission == '')
+                return true
             const permissions = (permission.indexOf('|') !== -1) ? permission.split('|') : [permission]
 
             return permissions.find((permission) => {
