@@ -30,7 +30,6 @@ var Acl = function () {
                 var permissions = permission.indexOf('|') !== -1 ? permission.split('|') : [permission];
 
                 return permissions.find(function (permission) {
-                        console.log('Checking: ', permission);
 
                         var needed = permission.indexOf('&') !== -1 ? permission.split('&') : permission;
 
