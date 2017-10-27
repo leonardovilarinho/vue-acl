@@ -4,3 +4,4 @@
 - best perfomance.
 - global fail route.
 - reactivity include to best usage.
+- prevent refresh page, current permission is save ans get from sessionStorage automatic.

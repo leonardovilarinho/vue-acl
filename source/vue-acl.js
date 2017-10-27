@@ -4,7 +4,11 @@ class Acl {
 
     init(router, permissions, fail) {
         this.router = router
+        const perms = window.sessionStorage.getItem('vue-acl-permissions')
+        if(perms != null)
+            permissions = perms
         this.permissions = this.clearPermissions(permissions)
+        this.savePermissions()
         this.fail = fail
     }
 
@@ -33,6 +37,14 @@ class Acl {
             permissions = permissions.split('&')
 
         return Array.isArray(permissions) ? permissions : [permissions]
+    }
+
+    savePermissions() {
+        let perm = this.permissions
+        if (Array.isArray(this.permissions))
+            perm = this.permissions.join('&')
+
+        window.sessionStorage.setItem('vue-acl-permissions', perm)
     }
 
     set router(router) {
@@ -70,6 +82,7 @@ Acl.install = (Vue, {router, init, fail}) => {
             access(value) {
                 acl.permissions = acl.clearPermissions(value)
                 bus.$emit('access-changed', acl.permissions)
+                acl.savePermissions()
                 this.$forceUpdate()
             }
         },
