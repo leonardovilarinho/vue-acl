@@ -1,0 +1,6 @@
+[
+  "babel-plugin-syntax-trailing-function-commas",
+  "babel-plugin-transform-async-to-generator",
+  "babel-plugin-transform-es2015-modules-commonjs",
+  "babel-plugin-transform-exponentiation-operator"
+]

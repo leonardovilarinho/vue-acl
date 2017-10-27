@@ -1,11 +1,10 @@
 {
   "name": "vue-acl",
-  "version": "2.2.3",
+  "version": "3.0.0",
   "description": "Plugin of Access Control List from Vue JS 2",
-  "main": "src/es5.min.js",
+  "main": "dist/vue-acl.js",
   "scripts": {
-    "demo": "cd demo && npm run dev",
-    "demo:install": "cd demo && npm install"
+    "build": "babel ./source/vue-acl.js --out-file ./dist/vue-acl.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/leonardovilarinho/vue-acl/issues"
   },
-  "homepage": "https://github.com/leonardovilarinho/vue-acl#readme"
+  "homepage": "https://github.com/leonardovilarinho/vue-acl#readme",
+  "devDependencies": {
+    "ava": "^0.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1"
+  }
 }
