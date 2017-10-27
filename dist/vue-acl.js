@@ -17,7 +17,10 @@ var Acl = function () {
         key: 'init',
         value: function init(router, permissions, fail) {
             this.router = router;
+            var perms = window.sessionStorage.getItem('vue-acl-permissions');
+            if (perms != null) permissions = perms;
             this.permissions = this.clearPermissions(permissions);
+            this.savePermissions();
             this.fail = fail;
         }
     }, {
@@ -50,6 +53,14 @@ var Acl = function () {
             if (permissions.indexOf('&') !== -1) permissions = permissions.split('&');
 
             return Array.isArray(permissions) ? permissions : [permissions];
+        }
+    }, {
+        key: 'savePermissions',
+        value: function savePermissions() {
+            var perm = this.permissions;
+            if (Array.isArray(this.permissions)) perm = this.permissions.join('&');
+
+            window.sessionStorage.setItem('vue-acl-permissions', perm);
         }
     }, {
         key: 'router',
@@ -98,6 +109,7 @@ Acl.install = function (Vue, _ref) {
             access: function access(value) {
                 acl.permissions = acl.clearPermissions(value);
                 bus.$emit('access-changed', acl.permissions);
+                acl.savePermissions();
                 this.$forceUpdate();
             }
         },
