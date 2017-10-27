@@ -30,7 +30,7 @@ class Acl {
 
     set router(router) {
         router.beforeEach((to, from, next) => {
-            const fail = to.meta.fail || '/'
+            const fail = to.meta.fail || from.fullPath
             if (typeof to.meta.permission == 'undefined')
                 return next(fail)
             else {

@@ -50,7 +50,7 @@ var Acl = function () {
             var _this2 = this;
 
             router.beforeEach(function (to, from, next) {
-                var fail = to.meta.fail || '/';
+                var fail = to.meta.fail || from.fullPath;
                 if (typeof to.meta.permission == 'undefined') return next(fail);else {
                     if (!_this2.check(to.meta.permission)) return next(fail);
                     next();
