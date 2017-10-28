@@ -63,7 +63,8 @@ const router = new VueRouter({
 Vue.use(VueAcl, {
   init: 'public',
   router: router,
-  fail: '/error'
+  fail: '/error',
+  save: true
 })
 
 new Vue({

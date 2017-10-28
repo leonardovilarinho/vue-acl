@@ -73,6 +73,10 @@ Vue.use( Acl, { router: Router, init: 'public' } )
 
 Use `Vue.use( Acl, { router: Router, init: 'public', fail: '/error' } )` to redirect default erros to `/error` route.
 
+#### Save permission to refresh page
+
+Use flag `save` to save permission in SessionStorage, but your app can insecure. Example: `Vue.use( Acl, { router: Router, init: 'public', save: true } )`
+
 
 **[3]:** The components use the global method `$can()` to verify that the system gives access to permission passed by parameter:
 
