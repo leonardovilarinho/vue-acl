@@ -15,10 +15,12 @@ var Acl = function () {
 
     _createClass(Acl, [{
         key: 'init',
-        value: function init(router, permissions, fail) {
+        value: function init(router, permissions, fail, save) {
             this.router = router;
+            this.save = save;
             var perms = window.sessionStorage.getItem('vue-acl-permissions');
-            if (perms != null) permissions = perms;
+            if (perms != null) permissions = atob(perms);
+
             this.permissions = this.clearPermissions(permissions);
             this.savePermissions();
             this.fail = fail;
@@ -57,10 +59,12 @@ var Acl = function () {
     }, {
         key: 'savePermissions',
         value: function savePermissions() {
+            if (this.save != true) return;
+
             var perm = this.permissions;
             if (Array.isArray(this.permissions)) perm = this.permissions.join('&');
 
-            window.sessionStorage.setItem('vue-acl-permissions', perm);
+            window.sessionStorage.setItem('vue-acl-permissions', btoa(perm));
         }
     }, {
         key: 'router',
@@ -87,12 +91,13 @@ var acl = new Acl();
 Acl.install = function (Vue, _ref) {
     var router = _ref.router,
         init = _ref.init,
-        fail = _ref.fail;
+        fail = _ref.fail,
+        save = _ref.save;
 
 
     var bus = new Vue();
 
-    acl.init(router, init, fail);
+    acl.init(router, init, fail, save);
 
     Vue.prototype.$can = function (permission) {
         return acl.check(permission);
