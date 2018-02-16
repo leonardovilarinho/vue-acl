@@ -1,7 +1,0 @@
-# Changelog to 3.x version:
-
-- replace `$access` method to `access` data.
-- best perfomance.
-- global fail route.
-- reactivity include to best usage.
-- prevent refresh page, current permission is save ans get from sessionStorage automatic.
