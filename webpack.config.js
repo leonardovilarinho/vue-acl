@@ -4,8 +4,8 @@ var webpack = require('webpack')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: '/vue-acl/dist/',
+    path: path.resolve(__dirname, './vue-acl'),
+    publicPath: '/vue-acl/',
     filename: 'build.js'
   },
   module: {
