@@ -3,22 +3,21 @@
 >This plugin aims to control the layout of the system and block access to certain routes of the vue-router, that according to the current active permission on the system.
 
 ### Dependencies:
-- Vue.js version 2
+- Vue.js >= 2
 - vue-router
 
 ### Installation
 
 We have two methods of installed, you can use the npm or a standalone.
 
-#### To install with NPM
+#### To install
 
 Use the following command to install as dependency:
 ```bash
 npm install vue-acl --save
+# or
+yarn add vue-acl
 ```
-#### For standalone installation
-
-To install just copy the file `source/vue-acl.js` to your plugins directory.
 
 ### Get Started:
 
