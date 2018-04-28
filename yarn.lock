@@ -2781,7 +2781,13 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vue@*:
+vue-e-bus@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vue-e-bus/-/vue-e-bus-1.0.0.tgz#7c24b9e6bf9f6cd0a6efc43eb68d2086a7915a16"
+  dependencies:
+    vue "^2.5.16"
+
+vue@*, vue@^2.5.16:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 

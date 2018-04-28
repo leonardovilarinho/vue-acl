@@ -6,6 +6,12 @@ Vue.use(VueAcl)
 
 export default new VueAcl.Create({
   initial: 'public',
+  notfound: '/e404',
   router,
-  notfound: '/e404'
+  acceptLocalRules: true,
+  rules: (acl) => ({
+    isAdmin: acl('admin').or('user').and('create').query(),
+    isPublic: acl('public').query()
+  })
+  // v-show="$acl('isAdmin')"
 })

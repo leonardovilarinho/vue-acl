@@ -12,7 +12,33 @@
 export default {
   name: 'App',
   mounted () {
-    this.$acl.change('teste')
+    console.log('public', this.$acl.check('isPublic'))
+    console.log('admin', this.$acl.check('isAdmin'))
+
+    this.$acl.change('admin')
+    console.log('')
+    console.log('public', this.$acl.check('isPublic'))
+    console.log('admin', this.$acl.check('isAdmin'))
+
+    this.$acl.change(['user'])
+    console.log('')
+    console.log('public', this.$acl.check('isPublic'))
+    console.log('admin', this.$acl.check('isAdmin'))
+
+    this.$acl.change(['user', 'create'])
+    console.log('')
+    console.log('public', this.$acl.check('isPublic'))
+    console.log('admin', this.$acl.check('isAdmin'))
+
+    this.$acl.change('guesta')
+    console.log('')
+    console.log('public', this.$acl.check('isPublic'))
+    console.log('guest', this.$acl.check('isGuest'))
+  },
+  computed: {
+    isGuest () {
+      return this.$acl.make('guest').or('public').query()
+    }
   }
 }
 </script>
