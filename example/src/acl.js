@@ -10,7 +10,7 @@ export default new AclCreate({
   router,
   acceptLocalRules: true,
   globalRules: {
-    isAdmin: new AclRule('admin').generate(),
-    isPublic: new AclRule('public').or('admin').generate()
+    isAdmin: new AclRule('admin'),
+    isPublic: new AclRule('*')
   }
 })
