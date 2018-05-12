@@ -27,7 +27,9 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
       if (to.path === notfound) return next()
 
       /** @type {Array} */
-      if (!('rule' in to.meta)) throw `[vue-acl] ${to.path} not have rule`
+      if (!('rule' in to.meta)) {
+        return console.error(`[vue-acl] ${to.path} not have rule`)
+      }
       let routePermission = to.meta.rule
 
       if (routePermission in globalRules) {
@@ -89,8 +91,9 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
             
 
           if (ruleName in self) {
-            if (!acceptLocalRules)
-              throw '[vue-multilanguage] acceptLocalRules is not enabled'
+            if (!acceptLocalRules) {
+              return console.error('[vue-acl] acceptLocalRules is not enabled')
+            }
 
             const result = testPermission(this.get, self[ruleName])
             return hasNot ? !result : result
