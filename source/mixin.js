@@ -7,7 +7,7 @@ import VueRouter from 'vue-router'
 
 /** @type {Array} */
 let currentGlobal = []
-let vm = null
+let not = false
 
 /**
  * Register all plugin actions
@@ -39,7 +39,6 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
     })
   }
 
-
   return {
     /**
      * Called before create component
@@ -60,8 +59,19 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
           }
         },
 
+        /**
+         * get current permission
+         */
         get get () {
           return currentGlobal
+        },
+
+        /**
+         * reverse current acl check
+         */
+        get not() {
+          not = true
+          return this
         },
 
         /**
@@ -69,16 +79,21 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
          * @param {string} ruleName rule name
          */
         check(ruleName) {
+          const hasNot = not
+          not = false
+
           if (ruleName in globalRules) {
             const result = testPermission(this.get, globalRules[ruleName])
-            return result
+            return hasNot ? !result : result
           }
             
 
           if (ruleName in self) {
             if (!acceptLocalRules)
               throw '[vue-multilanguage] acceptLocalRules is not enabled'
-            return testPermission(this.get, self[ruleName])
+
+            const result = testPermission(this.get, self[ruleName])
+            return hasNot ? !result : result
           }
 
           return false
