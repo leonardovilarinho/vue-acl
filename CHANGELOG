@@ -1,3 +1,12 @@
+# Changelog to 2.x version:
+
+- all actions is in $acl property
+- use classes for install plugin
+- classes for create rules
+- AND, OR coditions to compile rules
+- create local rules
+- check with not option
+
 # Changelog to 3.x version:
 
 - replace `$access` method to `access` data.
