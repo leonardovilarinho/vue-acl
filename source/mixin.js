@@ -1,56 +1,94 @@
 // @ts-check
 import EventBus from 'vue-e-bus'
-import query from './query'
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from 'constants';
+import Vue from 'vue'
 
-function testPermission(current, rules) {
-  const checkAnds = rules.map(rule => {
-    let valid = true
-    rule.forEach(and => valid = current.includes(and))
-    return valid
-  })
+import { testPermission } from './checker'
+import VueRouter from 'vue-router'
 
-  let result = false
-  checkAnds.forEach(or => {
-    if (or)
-      result = or
-  })
-  return result
-}
+/** @type {Array} */
+let currentGlobal = []
+let vm = null
 
-export default (initial, acceptLocalRules, globalRules) => ({
-  /**
-   * Called before create component
-   */
-  beforeCreate() {
-    const self = this
+/**
+ * Register all plugin actions
+ * 
+ * @param {string|Array} initial initial permission
+ * @param {boolean} acceptLocalRules if accept local rules
+ * @param {Object} globalRules definition of global rules
+ * @param {VueRouter} router router object
+ * @param {string} notfound path for 404 error
+ */
+export const register = (initial, acceptLocalRules, globalRules, router, notfound) => {
+  currentGlobal = Array.isArray(initial) ? initial : [initial]
 
-    this.$acl = {
-      /**
-       * Change current language
-       * @param {string|Array} param 
-       */
-      change (param) {
-        EventBus.$emit('multilanguage-language-changed', param)
-      },
-      check (ruleOrPermission) {
-        if (ruleOrPermission in globalRules)
-          return testPermission(this.current, globalRules[ruleOrPermission])
+  if (router !== null) {
+    router.beforeEach((to, from, next) => {
 
-        if (ruleOrPermission in self) {
-          if (!acceptLocalRules)
-            throw '[vue-multilanguage] acceptLocalRules is not enabled'
-          return testPermission(this.current, self[ruleOrPermission])
-        }
+      if (to.path === notfound) return next()
 
-        return false
-      },
-      make: (start) => (!acceptLocalRules) ? null : query(start),
-      current: Array.isArray(initial) ? initial : [initial], 
-    }
+      /** @type {Array} */
+      if (!('rule' in to.meta)) throw `[vue-acl] ${to.path} not have rule`
+      let routePermission = to.meta.rule
 
-    EventBus.$on('multilanguage-language-changed', (newLanguage) => {
-      this.$acl.current = Array.isArray(newLanguage) ? newLanguage : [newLanguage]
+      if (routePermission in globalRules) {
+        routePermission = globalRules[routePermission]
+      }
+
+      if (!testPermission(currentGlobal, routePermission)) return next(notfound)
+      return next()
     })
   }
-})
+
+
+  return {
+    /**
+     * Called before create component
+     */
+    beforeCreate () {
+      const self = this
+
+      this.$acl = {
+        /**
+         * Change current language
+         * @param {string|Array} param 
+         */
+        change(param) {
+          param = Array.isArray(param) ? param : [param]
+
+          if (currentGlobal.toString() !== param.toString()) {
+            EventBus.$emit('vueacl-permission-changed', param)
+          }
+        },
+
+        get get () {
+          return currentGlobal
+        },
+
+        /**
+         * Check if rule is valid currently
+         * @param {string} ruleName rule name
+         */
+        check(ruleName) {
+          if (ruleName in globalRules) {
+            const result = testPermission(this.get, globalRules[ruleName])
+            return result
+          }
+            
+
+          if (ruleName in self) {
+            if (!acceptLocalRules)
+              throw '[vue-multilanguage] acceptLocalRules is not enabled'
+            return testPermission(this.get, self[ruleName])
+          }
+
+          return false
+        }
+      }
+
+      EventBus.$on('vueacl-permission-changed', (newPermission) => {
+        currentGlobal = newPermission
+        this.$forceUpdate()
+      })
+    }
+  }
+}

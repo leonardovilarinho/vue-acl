@@ -1,17 +1,16 @@
 import Vue from 'vue'
-import VueAcl from '../../source/vue-acl'
+import { AclInstaller, AclCreate, AclRule } from '../../source'
 import router from './router'
 
-Vue.use(VueAcl)
+Vue.use(AclInstaller)
 
-export default new VueAcl.Create({
+export default new AclCreate({
   initial: 'public',
-  notfound: '/e404',
+  notfound: '/error',
   router,
   acceptLocalRules: true,
-  rules: (acl) => ({
-    isAdmin: acl('admin').or('user').and('create').query(),
-    isPublic: acl('public').query()
-  })
-  // v-show="$acl('isAdmin')"
+  globalRules: {
+    isAdmin: new AclRule('admin').or('user').and('delete').generate(),
+    isPublic: new AclRule('public').or('admin').generate()
+  }
 })

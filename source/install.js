@@ -1,22 +1,33 @@
 // @ts-check
 import { VueConstructor } from 'vue'
-import mixin from './mixin'
+import VueRouter from 'vue-router'
+import { register } from './mixin'
 
 /**
  * @typedef {Object} VueAclParams
- * @property {string} initial
- * @property {Object} router
+ * @property {string|Array} initial
+ * @property {VueRouter} router
  * @property {string} notfound
- * @property {Object} [rules]
+ * @property {Object} [globalRules]
  * @property {Boolean} [acceptLocalRules]
  */
 
 /**
+ * Function for install plugin with Vue.use
  * @function
  * @param {VueConstructor} _Vue
  * @param {VueAclParams} options
  */
-export const install = (_Vue, options) => {
-  const { initial, acceptLocalRules, rules } = options
-  _Vue.mixin(mixin(initial, acceptLocalRules || false, rules || {}))
+export const _install = (_Vue, options) => {
+  const { initial, acceptLocalRules, globalRules, router, notfound } = options
+
+  _Vue.mixin(
+    register(
+      initial,
+      acceptLocalRules || false,
+      globalRules || {},
+      router,
+      notfound
+    )
+  )
 }

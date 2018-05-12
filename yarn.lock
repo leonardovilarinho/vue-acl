@@ -44,6 +44,12 @@
   dependencies:
     arrify "^1.0.1"
 
+"@types/vue-router@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/vue-router/-/vue-router-2.0.0.tgz#81094f2107e766a11b20af7fa0f34bec1f321e28"
+  dependencies:
+    vue-router "*"
+
 "@types/vue@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/vue/-/vue-2.0.0.tgz#ec77b3d89591deb9ca5cb052368aa9c32be088e7"
@@ -2786,6 +2792,10 @@ vue-e-bus@^1.0.0:
   resolved "https://registry.yarnpkg.com/vue-e-bus/-/vue-e-bus-1.0.0.tgz#7c24b9e6bf9f6cd0a6efc43eb68d2086a7915a16"
   dependencies:
     vue "^2.5.16"
+
+vue-router@*:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
 
 vue@*, vue@^2.5.16:
   version "2.5.16"

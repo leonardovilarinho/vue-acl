@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
-import About from './views/About.vue'
+import { AclRule } from '../../source'
+
+import Public from './views/Public.vue'
+import Admin from './views/Admin.vue'
+import NotFound from './views/NotFound.vue'
 
 Vue.use(Router)
 
@@ -9,13 +12,27 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'public',
+      component: Public,
+      meta: {
+        rule: 'isPublic'
+      }
     },
     {
-      path: '/about',
-      name: 'about',
-      component: About
+      path: '/admin',
+      name: 'admin',
+      component: Admin,
+      meta: {
+        rule: new AclRule('logged').and('create').or('admin').generate()
+      }
+    },
+    {
+      path: '/error',
+      name: 'notfound',
+      component: NotFound,
+      meta: {
+        rule: new AclRule('public').generate()
+      }
     }
   ]
 })
