@@ -23,7 +23,7 @@ export default new Router({
       name: 'admin',
       component: Admin,
       meta: {
-        rule: new AclRule('logged').and('create').or('admin').generate()
+        rule: new AclRule('admin').generate()
       }
     },
     {
@@ -31,7 +31,7 @@ export default new Router({
       name: 'notfound',
       component: NotFound,
       meta: {
-        rule: new AclRule('public').generate()
+        rule: '*'
       }
     }
   ]

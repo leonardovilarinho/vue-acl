@@ -1,109 +1,153 @@
-# Plugin of Access Control List from Vue JS 2
+# vue-acl: access control list in vuejs
 
->This plugin aims to control the layout of the system and block access to certain routes of the vue-router, that according to the current active permission on the system.
+> We will help you to control the permission of access in your app for yours components and routes 
 
-### Dependencies:
-- Vue.js >= 2
-- vue-router
+## Installation
 
-### Installation
-
-We have two methods of installed, you can use the npm or a standalone.
-
-#### To install
-
-Use the following command to install as dependency:
 ```bash
-npm install vue-acl --save
-# or
+# yarn
 yarn add vue-acl
+# npm
+npm install vue-acl --save
 ```
 
-### Get Started:
+## Get Started
 
-**[1]:** Import the plugin and register it on VueJS, it is necessary to send as a parameter the vue router-router and the default system permission:
+Create the `acl.js` file to define your acl settings and global rules:
 
-```js
-import Router from '../routes/router'
-import Acl from 'vue-acl'
-Vue.use( Acl, { router: Router, init: 'public' } )
+```javascript
+import Vue from 'vue'
+import { AclInstaller, AclCreate, AclRule } from 'vue-acl'
+import router from './router'
+
+Vue.use(AclInstaller)
+
+export default new AclCreate({
+  initial: 'public',
+  notfound: '/error',
+  router,
+  acceptLocalRules: true,
+  globalRules: {
+    isAdmin: new AclRule('admin').generate(),
+    isPublic: new AclRule('public').or('admin').generate(),
+    isLogged: new AclRule('user').and('inside').generate()
+  }
+})
 ```
 
-**[2]:** Add metadata in their routes saying which permission, or group of permissions is required to access the route, use pipe (|) to do an OR check for more than one permission, use (&) to do an AND check for multiple permissions (these can be used in combination for more complex situations). Use the ' fail ' metadata to indicate which this route to redirect on error:
-```js
-[
-  {
-    path: '/',
-    component: require('./components/Public.vue'),
-    meta: {
-      permission: 'public',
-      fail: '/error-public'
+More details:
+
+- **AclInstaller**: plugin class for install in Vue with Vue.use
+- **AclCreate**: class to define acl settings
+  - **initial**: first permission, for startup with your app
+  - **notfound**: route for 404 error
+  - **router**: your VueRouter instance
+  - **acceptLocalRules**: if you can define new rules inside vue components
+  - **globalRules**: define globals rules for access in routes and any components
+- **AclRule**: class with rule builder, the instance receive initial permission.
+  - **or**: method for add OR condition in rule, e.g: if current permission is public OR admin the rule isPublic equals true
+  - **and**: method for add AND condition in rule, e.g: if current permission contains user AND inside the rule isLogged equals true
+  - **generate**: this method should called to create and compile your rule query
+
+In your `router.js` file, you can define permissions for yours routes:
+
+```javascript
+import Vue from 'vue'
+import Router from 'vue-router'
+import { AclRule } from 'vue-acl'
+
+import Public from './views/Public.vue'
+import Admin from './views/Admin.vue'
+import NotFound from './views/NotFound.vue'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'public',
+      component: Public,
+      meta: {
+        rule: 'isPublic'
+      }
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: Admin,
+      meta: {
+        rule: new AclRule('admin').generate()
+      }
+    },
+    {
+      path: '/error',
+      name: 'notfound',
+      component: NotFound,
+      meta: {
+        rule: '*'
+      }
     }
-  },
-  {
-    path: '/manager',
-    component: require('./components/Manager.vue'),
-    meta: {
-      permission: 'manager',
+  ]
+})
+```
+
+More details:
+- Define `rule` meta for link a route with a permission, your can use name of the global rule e.g `isPublic` or use `AclRule` for create new rule orr use `*` for define allowed route.
+
+For finish, in your `main.js` import the `acl` and pass to Vue root instance:
+
+```javascript
+import Vue from 'vue'
+import App from './App.vue'
+import router from './router'
+import acl from './acl'
+
+Vue.config.productionTip = false
+
+new Vue({
+  router,
+  acl,
+  render: h => h(App)
+}).$mount('#app')
+```
+
+## Use in components
+
+If you defined `acceptLocalRules` as `true`, you can define computed properties with new rules, but this rules works only in component:
+
+```javascript
+import { AclRule } from 'vue-acl'
+
+export default {
+  computed: {
+    isLocalRule () {
+      return new AclRule('create').generate()
     }
-  },
-  {
-    path: '/client',
-    component: require('./components/Client.vue'),
-    meta: {
-      permission: 'client',
-    }
-  },
-  {
-    path: '/error',
-    component: require('./components/Error.vue'),
-    meta: {
-      permission: 'public'
-    }
-  },
-]
+  }
+}
 ```
 
-*Note1:* Use `public` permission to users not logged, the `vue-acl` handler automatic this route to public users.
+You too can check rules for display custom elements in your layout:
 
-*Note2:* Use `fail` to declare redirect error excluvise to this route.
-
-#### Use public fail route
-
-Use `Vue.use( Acl, { router: Router, init: 'public', fail: '/error' } )` to redirect default erros to `/error` route.
-
-#### Save permission to refresh page
-
-Use flag `save` to save permission in SessionStorage, but your app can insecure. Example: `Vue.use( Acl, { router: Router, init: 'public', save: true } )`
-
-
-**[3]:** The components use the global method `$can()` to verify that the system gives access to permission passed by parameter:
-
-```vue
-<router-link v-show='$can("client|manager")'  to='/client'>To client</router-link> |
-<router-link v-show='$can("manager")'         to='/manager'>To manager</router-link> |
-<router-link v-show='$can("public")'          to='/'>To Public</router-link>
+```html
+<button v-if="$acl.not.check('isAdmin')">
+  Set admin permisson
+</button>
+<button v-else>
+  Set public permission
+</button>
 ```
 
-This method receives a parameter with the permissions to check, separated by a pipe (|) or ampersand (&), and returns a `bool` saying if permission has been granted.
+E.g: if `isAdmin` is **not** true the button 'Set admin permisson' is displayed.
 
-To change the current system permission use the global attribute `access`, passing the new permission, or array of permissions:
-```js
- this.access = 'admin'
+Finish, you can change current permission in any component using `change` method:
+
+```html
+<button v-if="$acl.not.check('isAdmin')" @click="$acl.change('admin')">
+  Set admin permisson
+</button>
+<button v-else @click="$acl.change('public')">
+  Set public permission
+</button>
 ```
-or:
-```js
- this.access = ['edit', 'delete']
-```
-or with & operator:
-```js
- this.access = 'edit&delete'
-```
-
-To see the current system permission, just print `this.access` variable.
-
-### Contributing
-
-To help in the development and expansion of this repository take a FORK to your account, after you have made your modifications do a PULL REQUEST, it will be parsed and included here since it helps the plugin.
-
-Before send PR, run `npm run build` to transpile es6 to es5 code.
