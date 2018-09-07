@@ -1,4 +1,4 @@
-# vue-acl: access control list in vuejs
+# arsy-vue-acl: access control list in vuejs
 
 > We will help you to control the permission of access in your app for yours components and routes 
 
@@ -6,9 +6,9 @@
 
 ```bash
 # yarn
-yarn add vue-acl
+yarn add arsy-vue-acl
 # npm
-npm install vue-acl --save
+npm install arsy-vue-acl --save
 ```
 
 ## Get Started
@@ -17,7 +17,7 @@ Create the `acl.js` file to define your acl settings and global rules:
 
 ```javascript
 import Vue from 'vue'
-import { AclInstaller, AclCreate, AclRule } from 'vue-acl'
+import { AclInstaller, AclCreate, AclRule } from 'arsy-vue-acl'
 import router from './router'
 
 Vue.use(AclInstaller)
@@ -54,7 +54,7 @@ In your `router.js` file, you can define permissions for yours routes:
 ```javascript
 import Vue from 'vue'
 import Router from 'vue-router'
-import { AclRule } from 'vue-acl'
+import { AclRule } from 'arsy-vue-acl'
 
 import Public from './views/Public.vue'
 import Admin from './views/Admin.vue'
@@ -117,7 +117,7 @@ new Vue({
 If you defined `acceptLocalRules` as `true`, you can define computed properties with new rules, but this rules works only in component:
 
 ```javascript
-import { AclRule } from 'vue-acl'
+import { AclRule } from 'arsy-vue-acl'
 
 export default {
   computed: {
