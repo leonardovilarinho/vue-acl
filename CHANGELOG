@@ -14,3 +14,8 @@
 - global fail route.
 - reactivity include to best usage.
 - prevent refresh page, current permission is save ans get from sessionStorage automatic.
+
+# Changelog to 4.1.0:
+
+- fix for and operator
+- typos fixes in source files

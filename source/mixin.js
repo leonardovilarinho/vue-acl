@@ -50,7 +50,7 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
       this.$acl = {
         /**
-         * Change current language
+         * Change current permission
          * @param {string|Array} param 
          */
         change(param) {
