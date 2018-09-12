@@ -9,6 +9,10 @@ import VueRouter from 'vue-router'
 let currentGlobal = []
 let not = false
 
+EventBus.$on('vueacl-permission-changed', (newPermission) => {
+        currentGlobal = newPermission
+      })
+
 /**
  * Register all plugin actions
  * 
