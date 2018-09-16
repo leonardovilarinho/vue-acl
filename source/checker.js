@@ -26,7 +26,7 @@ export const testPermission =(current, rules) => {
 
   const checkAnds = rules.map(rule => {
     let valid = true
-    rule.forEach(and => valid = current.includes(and))
+    rule.forEach(and => valid = valid && current.includes(and))
     return valid
   })
 

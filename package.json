@@ -17,6 +17,9 @@
     "user"
   ],
   "author": "Leonardo Vilarinho",
+  "contributors": [
+    "Yakup Arslan"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/leonardovilarinho/vue-acl/issues"
