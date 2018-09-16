@@ -1,6 +1,6 @@
 {
   "name": "vue-acl",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Plugin of Access Control List from Vue JS 2",
   "main": "dist/index.js",
   "scripts": {
