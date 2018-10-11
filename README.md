@@ -128,7 +128,7 @@ export default {
 }
 ```
 
-You too can check rules for display custom elements in your layout:
+You can also check rules for display custom elements in your layout:
 
 ```html
 <button v-if="$acl.not.check('isAdmin')">
