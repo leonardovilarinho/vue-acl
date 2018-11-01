@@ -130,6 +130,9 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         currentGlobal = newPermission;
         _this.$forceUpdate();
       });
+    },
+    beforeDestroy: function beforeDestroy() {
+      _vueEBus2.default.$off('vueacl-permission-changed');
     }
   };
 };
