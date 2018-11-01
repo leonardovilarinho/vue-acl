@@ -111,6 +111,9 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         currentGlobal = newPermission
         this.$forceUpdate()
       })
+    },
+    beforeDestroy() {
+      EventBus.$off('vueacl-permission-changed')
     }
   }
 }
