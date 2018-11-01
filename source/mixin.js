@@ -9,9 +9,13 @@ import VueRouter from 'vue-router'
 let currentGlobal = []
 let not = false
 
-EventBus.$on('vueacl-permission-changed', (newPermission) => {
-        currentGlobal = newPermission
-      })
+const permissionChanged = function(newPermission){
+    currentGlobal = newPermission;
+    this.$forceUpdate();
+}
+
+EventBus.$on('vueacl-permission-changed', permissionChanged);
+
 
 /**
  * Register all plugin actions
@@ -107,13 +111,11 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         }
       }
 
-      EventBus.$on('vueacl-permission-changed', (newPermission) => {
-        currentGlobal = newPermission
-        this.$forceUpdate()
-      })
+      EventBus.$on('vueacl-permission-changed', permissionChanged)
     },
     beforeDestroy() {
-      EventBus.$off('vueacl-permission-changed')
-    }
+      EventBus.$off('vueacl-permission-changed', permissionChanged)
+    },
+   
   }
 }
