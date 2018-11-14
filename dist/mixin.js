@@ -26,9 +26,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var currentGlobal = [];
 var not = false;
 
-_vueEBus2.default.$on('vueacl-permission-changed', function (newPermission) {
+var permissionChanged = function permissionChanged(newPermission) {
   currentGlobal = newPermission;
-});
+  this.$forceUpdate();
+};
+
+_vueEBus2.default.$on('vueacl-permission-changed', permissionChanged);
 
 /**
  * Register all plugin actions
@@ -67,8 +70,6 @@ var register = exports.register = function register(initial, acceptLocalRules, g
      * Called before create component
      */
     beforeCreate: function beforeCreate() {
-      var _this = this;
-
       var self = this;
 
       this.$acl = {
@@ -126,10 +127,10 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         }
       };
 
-      _vueEBus2.default.$on('vueacl-permission-changed', function (newPermission) {
-        currentGlobal = newPermission;
-        _this.$forceUpdate();
-      });
+      _vueEBus2.default.$on('vueacl-permission-changed', permissionChanged);
+    },
+    beforeDestroy: function beforeDestroy() {
+      _vueEBus2.default.$off('vueacl-permission-changed', permissionChanged);
     }
   };
 };
