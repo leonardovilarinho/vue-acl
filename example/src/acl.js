@@ -4,6 +4,8 @@ import router from './router'
 
 Vue.use(AclInstaller)
 
+const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 export default new AclCreate({
   initial: 'public',
   notfound: '/error',
@@ -12,5 +14,9 @@ export default new AclCreate({
   globalRules: {
     isAdmin: new AclRule('admin'),
     isPublic: new AclRule('*')
+  },
+  middleware: async acl => {
+    await timeout(2000)
+    acl.change('admin')
   }
 })

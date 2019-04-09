@@ -31,6 +31,10 @@ export default new AclCreate({
     isAdmin: new AclRule('admin').generate(),
     isPublic: new AclRule('public').or('admin').generate(),
     isLogged: new AclRule('user').and('inside').generate()
+  },
+  middleware: async acl => {
+    await timeout(2000) // call your api
+    acl.change('admin')
   }
 })
 ```
@@ -44,6 +48,7 @@ More details:
   - **router**: your VueRouter instance
   - **acceptLocalRules**: if you can define new rules inside vue components
   - **globalRules**: define globals rules for access in routes and any components
+  - **middleware**: async method executed in all route change event, to get user in your api and change permission
 - **AclRule**: class with rule builder, the instance receive initial permission.
   - **or**: method for add OR condition in rule, e.g: if current permission is public OR admin the rule isPublic equals true
   - **and**: method for add AND condition in rule, e.g: if current permission contains user AND inside the rule isLogged equals true

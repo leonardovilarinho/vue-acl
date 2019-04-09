@@ -1,36 +1,23 @@
 // @ts-check
-import EventBus from 'vue-e-bus'
 import Vue from 'vue'
 
 import { testPermission } from './checker'
-import VueRouter from 'vue-router'
 
-/** @type {Array} */
+const EventBus = new Vue()
+
 let currentGlobal = []
 let not = false
 
-const permissionChanged = function(newPermission){
-    currentGlobal = newPermission;
-    this.$forceUpdate();
-}
 
-EventBus.$on('vueacl-permission-changed', permissionChanged);
-
-
-/**
- * Register all plugin actions
- * 
- * @param {string|Array} initial initial permission
- * @param {boolean} acceptLocalRules if accept local rules
- * @param {Object} globalRules definition of global rules
- * @param {VueRouter} router router object
- * @param {string} notfound path for 404 error
- */
-export const register = (initial, acceptLocalRules, globalRules, router, notfound) => {
+export const register = (initial, acceptLocalRules, globalRules, router, notfound, middleware) => {
   currentGlobal = Array.isArray(initial) ? initial : [initial]
 
-  if (router !== null) {
-    router.beforeEach((to, from, next) => {
+  if (router !== null && middleware) {
+    router.beforeEach(async (to, from, next) => {
+
+      await middleware({change (a) {
+        currentGlobal = a
+      }})
 
       if (to.path === notfound) return next()
 
@@ -111,11 +98,13 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         }
       }
 
-      EventBus.$on('vueacl-permission-changed', permissionChanged)
+      EventBus.$on('vueacl-permission-changed', newPermission => {
+        currentGlobal = newPermission
+        this.$forceUpdate()
+      })
     },
     beforeDestroy() {
-      EventBus.$off('vueacl-permission-changed', permissionChanged)
-    },
-   
+      EventBus.$off('vueacl-permission-changed')
+    }
   }
 }

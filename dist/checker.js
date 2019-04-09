@@ -3,11 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.testPermission = undefined;
-
-var _assert = require('assert');
-
-// @ts-check
 
 /**
  * Test a rule with a permission group

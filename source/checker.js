@@ -1,6 +1,3 @@
-import { throws } from "assert";
-
-// @ts-check
 
 /**
  * Test a rule with a permission group

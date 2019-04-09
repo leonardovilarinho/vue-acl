@@ -5,48 +5,31 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.register = undefined;
 
-var _vueEBus = require('vue-e-bus');
-
-var _vueEBus2 = _interopRequireDefault(_vueEBus);
-
 var _vue = require('vue');
 
 var _vue2 = _interopRequireDefault(_vue);
 
 var _checker = require('./checker');
 
-var _vueRouter = require('vue-router');
-
-var _vueRouter2 = _interopRequireDefault(_vueRouter);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/** @type {Array} */
 // @ts-check
+var EventBus = new _vue2.default();
+
 var currentGlobal = [];
 var not = false;
 
-var permissionChanged = function permissionChanged(newPermission) {
-  currentGlobal = newPermission;
-  this.$forceUpdate();
-};
-
-_vueEBus2.default.$on('vueacl-permission-changed', permissionChanged);
-
-/**
- * Register all plugin actions
- * 
- * @param {string|Array} initial initial permission
- * @param {boolean} acceptLocalRules if accept local rules
- * @param {Object} globalRules definition of global rules
- * @param {VueRouter} router router object
- * @param {string} notfound path for 404 error
- */
-var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notfound) {
+var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notfound, middleware) {
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
-  if (router !== null) {
-    router.beforeEach(function (to, from, next) {
+  if (router !== null && middleware) {
+    router.beforeEach(async function (to, from, next) {
+
+      await middleware({
+        change: function change(a) {
+          currentGlobal = a;
+        }
+      });
 
       if (to.path === notfound) return next();
 
@@ -70,6 +53,8 @@ var register = exports.register = function register(initial, acceptLocalRules, g
      * Called before create component
      */
     beforeCreate: function beforeCreate() {
+      var _this = this;
+
       var self = this;
 
       this.$acl = {
@@ -81,7 +66,7 @@ var register = exports.register = function register(initial, acceptLocalRules, g
           param = Array.isArray(param) ? param : [param];
 
           if (currentGlobal.toString() !== param.toString()) {
-            _vueEBus2.default.$emit('vueacl-permission-changed', param);
+            EventBus.$emit('vueacl-permission-changed', param);
           }
         },
 
@@ -127,10 +112,13 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         }
       };
 
-      _vueEBus2.default.$on('vueacl-permission-changed', permissionChanged);
+      EventBus.$on('vueacl-permission-changed', function (newPermission) {
+        currentGlobal = newPermission;
+        _this.$forceUpdate();
+      });
     },
     beforeDestroy: function beforeDestroy() {
-      _vueEBus2.default.$off('vueacl-permission-changed', permissionChanged);
+      EventBus.$off('vueacl-permission-changed');
     }
   };
 };
