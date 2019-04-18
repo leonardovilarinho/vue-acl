@@ -31,7 +31,9 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         }
       });
 
-      if (to.path === notfound) return next();
+      // to be backwards compatible (notfound could be string)
+      var notFoundPath = notfound.path || notfound;
+      if (to.path === notFoundPath) return next();
 
       /** @type {Array} */
       if (!('rule' in to.meta)) {
@@ -43,7 +45,13 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         routePermission = globalRules[routePermission];
       }
 
-      if (!(0, _checker.testPermission)(currentGlobal, routePermission)) return next(notfound);
+      if (!(0, _checker.testPermission)(currentGlobal, routePermission)) {
+        // check if forwardQueryParams is set
+        if (notfound.forwardQueryParams) {
+          return next({ path: notFoundPath, query: to.query });
+        }
+        return next(notFoundPath);
+      }
       return next();
     });
   }
