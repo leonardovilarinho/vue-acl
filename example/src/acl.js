@@ -8,7 +8,9 @@ const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export default new AclCreate({
   initial: 'public',
-  notfound: '/error',
+  notfound: {
+    path: '/error'
+  },
   router,
   acceptLocalRules: true,
   globalRules: {

@@ -24,7 +24,10 @@ Vue.use(AclInstaller)
 
 export default new AclCreate({
   initial: 'public',
-  notfound: '/error',
+  notfound: {
+    path: '/error',
+    forwardQueryParams: true,
+  },
   router,
   acceptLocalRules: true,
   globalRules: {
@@ -44,7 +47,7 @@ More details:
 - **AclInstaller**: plugin class for install in Vue with Vue.use
 - **AclCreate**: class to define acl settings
   - **initial**: first permission, for startup with your app
-  - **notfound**: route for 404 error
+  - **notfound**: route for 404 error, add `forwardQueryParams: true` if you want to forward all query params,
   - **router**: your VueRouter instance
   - **acceptLocalRules**: if you can define new rules inside vue components
   - **globalRules**: define globals rules for access in routes and any components
