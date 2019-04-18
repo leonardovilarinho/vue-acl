@@ -19,7 +19,9 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         currentGlobal = a
       }})
 
-      if (to.path === notfound) return next()
+      // to be backwards compatible (notfound could be string)
+      const notFoundPath = notfound.path || notfound;
+      if (to.path === notFoundPath) return next()
 
       /** @type {Array} */
       if (!('rule' in to.meta)) {
@@ -31,7 +33,13 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         routePermission = globalRules[routePermission]
       }
 
-      if (!testPermission(currentGlobal, routePermission)) return next(notfound)
+      if (!testPermission(currentGlobal, routePermission)) {
+        // check if forwardQueryParams is set
+        if (notfound.forwardQueryParams) {
+          return next({path: notFoundPath, query: to.query})
+        }
+        return next(notFoundPath)
+      }
       return next()
     })
   }

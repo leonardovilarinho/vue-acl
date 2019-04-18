@@ -3,7 +3,10 @@ import { _install } from './install'
 let options = {
   initial: '',
   router: null,
-  notfound: ''
+  notfound: {
+    path: '',
+    forwardQueryParams: false,
+  }
 }
 
 let Vue
