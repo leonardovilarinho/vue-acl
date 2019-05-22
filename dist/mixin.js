@@ -13,7 +13,9 @@ var _checker = require('./checker');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// @ts-check
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } // @ts-check
+
+
 var EventBus = new _vue2.default();
 
 var currentGlobal = [];
@@ -23,29 +25,66 @@ var register = exports.register = function register(initial, acceptLocalRules, g
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
   if (router !== null && middleware) {
-    router.beforeEach(async function (to, from, next) {
+    router.beforeEach(function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(to, from, next) {
+        var routePermission;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return middleware({
+                  change: function change(a) {
+                    currentGlobal = a;
+                  }
+                });
 
-      await middleware({
-        change: function change(a) {
-          currentGlobal = a;
-        }
-      });
+              case 2:
+                if (!(to.path === notfound)) {
+                  _context.next = 4;
+                  break;
+                }
 
-      if (to.path === notfound) return next();
+                return _context.abrupt('return', next());
 
-      /** @type {Array} */
-      if (!('rule' in to.meta)) {
-        return console.error('[vue-acl] ' + to.path + ' not have rule');
-      }
-      var routePermission = to.meta.rule;
+              case 4:
+                if ('rule' in to.meta) {
+                  _context.next = 6;
+                  break;
+                }
 
-      if (routePermission in globalRules) {
-        routePermission = globalRules[routePermission];
-      }
+                return _context.abrupt('return', console.error('[vue-acl] ' + to.path + ' not have rule'));
 
-      if (!(0, _checker.testPermission)(currentGlobal, routePermission)) return next(notfound);
-      return next();
-    });
+              case 6:
+                routePermission = to.meta.rule;
+
+
+                if (routePermission in globalRules) {
+                  routePermission = globalRules[routePermission];
+                }
+
+                if ((0, _checker.testPermission)(currentGlobal, routePermission)) {
+                  _context.next = 10;
+                  break;
+                }
+
+                return _context.abrupt('return', next(notfound));
+
+              case 10:
+                return _context.abrupt('return', next());
+
+              case 11:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, undefined);
+      }));
+
+      return function (_x, _x2, _x3) {
+        return _ref.apply(this, arguments);
+      };
+    }());
   }
 
   return {
