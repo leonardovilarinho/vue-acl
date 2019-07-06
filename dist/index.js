@@ -14,7 +14,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var options = {
   initial: '',
   router: null,
-  notfound: ''
+  notfound: {
+    path: '',
+    forwardQueryParams: false
+  }
 };
 
 var Vue = void 0;

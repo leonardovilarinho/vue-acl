@@ -25,6 +25,39 @@ var register = exports.register = function register(initial, acceptLocalRules, g
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
   if (router !== null && middleware) {
+
+    router.beforeEach(async function (to, from, next) {
+
+      await middleware({
+        change: function change(a) {
+          currentGlobal = a;
+        }
+      });
+
+      // to be backwards compatible (notfound could be string)
+      var notFoundPath = notfound.path || notfound;
+      if (to.path === notFoundPath) return next();
+
+      /** @type {Array} */
+      if (!('rule' in to.meta)) {
+        return console.error('[vue-acl] ' + to.path + ' not have rule');
+      }
+      var routePermission = to.meta.rule;
+
+      if (routePermission in globalRules) {
+        routePermission = globalRules[routePermission];
+      }
+
+      if (!(0, _checker.testPermission)(currentGlobal, routePermission)) {
+        // check if forwardQueryParams is set
+        if (notfound.forwardQueryParams) {
+          return next({ path: notFoundPath, query: to.query });
+        }
+        return next(notFoundPath);
+      }
+      return next();
+    });
+
     router.beforeEach(function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(to, from, next) {
         var routePermission;
@@ -85,6 +118,7 @@ var register = exports.register = function register(initial, acceptLocalRules, g
         return _ref.apply(this, arguments);
       };
     }());
+
   }
 
   return {
