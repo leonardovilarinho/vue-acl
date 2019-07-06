@@ -3,6 +3,9 @@ import Vue from 'vue'
 
 import { testPermission } from './checker'
 
+
+
+
 const EventBus = new Vue()
 
 let currentGlobal = []
@@ -14,7 +17,6 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
   if (router !== null && middleware) {
     router.beforeEach(async (to, from, next) => {
-
       await middleware({change (a) {
         currentGlobal = a
       }})
@@ -54,11 +56,10 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
       this.$acl = {
         /**
          * Change current permission
-         * @param {string|Array} param 
+         * @param {string|Array} param
          */
         change(param) {
           param = Array.isArray(param) ? param : [param]
-
           if (currentGlobal.toString() !== param.toString()) {
             EventBus.$emit('vueacl-permission-changed', param)
           }
@@ -91,7 +92,7 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
             const result = testPermission(this.get, globalRules[ruleName])
             return hasNot ? !result : result
           }
-            
+
 
           if (ruleName in self) {
             if (!acceptLocalRules) {
@@ -108,11 +109,20 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
       EventBus.$on('vueacl-permission-changed', newPermission => {
         currentGlobal = newPermission
+        if ('onChange' in this.$acl) {
+          this.$acl.onChange(currentGlobal)
+        }
         this.$forceUpdate()
       })
     },
-    beforeDestroy() {
-      EventBus.$off('vueacl-permission-changed')
+    destroyed() {
+      EventBus.$off('vueacl-permission-changed', newPermission => {
+        currentGlobal = newPermission
+        if ('onChange' in this.$acl) {
+          this.$acl.onChange(currentGlobal)
+        }
+        this.$forceUpdate()
+      })
     }
   }
 }

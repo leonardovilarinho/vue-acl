@@ -159,3 +159,12 @@ Finish, you can change current permission in any component using `change` method
   Set public permission
 </button>
 ```
+
+In your component can add observer for current Rule:
+```javascript
+mounted () {
+  this.$acl.onChange = newPermission => {
+    console.log('Has changed to', newPermission)
+  }
+}
+```
