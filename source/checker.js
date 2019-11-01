@@ -25,16 +25,13 @@ export const testPermission =(current, rules) => {
   // If current rule is an array then use the Array.prototype.include
   if (Array.isArray(current)) {
     checkAnds = rules.map((rule) => {
-      return rule.reduce((validator, ruleValue) => {
-        validator && current.includes(ruleValue)
-      }, true);
+      return rule.reduce((validator, ruleValue) => validator && current.includes(ruleValue), true);
     });
   } else {
     // If it's string, check rule by === operator to get the absolute equal rule.
     checkAnds = rules.map((rule) => {
-      return rule.reduce((validator, ruleValue) => {
-        validator && (current === ruleValue)
-      }, true);
+
+      return rule.reduce((validator, ruleValue) => validator && (current === ruleValue), true);
     });
   }
 
