@@ -7,31 +7,39 @@
  */
 export const testPermission =(current, rules) => {
   if (rules.generate === undefined && !Array.isArray(rules)) {
-    return console.error('[vue-acl] your have invalid rules')
+    return console.error('[vue-acl] you have invalid rules');
   }
 
   if (!Array.isArray(rules)) {
-    rules = rules.generate()
+    rules = rules.generate();
   }
 
-  let hasAllowed = false
+  let hasAllowed = false;
   rules.forEach((rule) => {
-    if (rule.includes('*')) hasAllowed = true
-  })
+    if (rule === '*') hasAllowed = true;
+  });
 
-  if (hasAllowed) return true
+  if (hasAllowed) return true;
 
-  const checkAnds = rules.map(rule => {
-    let valid = true
-    rule.forEach(and => valid = valid && current.includes(and))
-    return valid
-  })
+  let checkAnds;
+  // If current rule is an array then use the Array.prototype.include
+  if (Array.isArray(current)) {
+    checkAnds = rules.map((rule) => {
+      return rule.reduce((validator, ruleValue) => {
+        validator && current.includes(ruleValue)
+      }, true);
+    });
+  } else {
+    // If it's string, check rule by === operator to get the absolute equal rule.
+    checkAnds = rules.map((rule) => {
+      return rule.reduce((validator, ruleValue) => {
+        validator && (current === ruleValue)
+      }, true);
+    });
+  }
 
-  let result = false
-  checkAnds.forEach(or => {
-    if (or)
-      result = or
-  })
+  // Check 'OR'
+  const result = checkAnds.some((or) => or);
 
-  return result
+  return result;
 }
