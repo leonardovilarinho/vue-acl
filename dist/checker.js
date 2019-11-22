@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 var testPermission = exports.testPermission = function testPermission(current, rules) {
   if (rules.generate === undefined && !Array.isArray(rules)) {
-    return console.error('[vue-acl] your have invalid rules');
+    return console.error('[vue-acl] you have invalid rules');
   }
 
   if (!Array.isArray(rules)) {
@@ -21,22 +21,32 @@ var testPermission = exports.testPermission = function testPermission(current, r
 
   var hasAllowed = false;
   rules.forEach(function (rule) {
-    if (rule.includes('*')) hasAllowed = true;
+    if (rule === '*') hasAllowed = true;
   });
 
   if (hasAllowed) return true;
 
-  var checkAnds = rules.map(function (rule) {
-    var valid = true;
-    rule.forEach(function (and) {
-      return valid = valid && current.includes(and);
+  var checkAnds = void 0;
+  // If current rule is an array then use the Array.prototype.include
+  if (Array.isArray(current)) {
+    checkAnds = rules.map(function (rule) {
+      return rule.reduce(function (validator, ruleValue) {
+        return validator && current.includes(ruleValue);
+      }, true);
     });
-    return valid;
-  });
+  } else {
+    // If it's string, check rule by === operator to get the absolute equal rule.
+    checkAnds = rules.map(function (rule) {
 
-  var result = false;
-  checkAnds.forEach(function (or) {
-    if (or) result = or;
+      return rule.reduce(function (validator, ruleValue) {
+        return validator && current === ruleValue;
+      }, true);
+    });
+  }
+
+  // Check 'OR'
+  var result = checkAnds.some(function (or) {
+    return or;
   });
 
   return result;
