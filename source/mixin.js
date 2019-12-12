@@ -15,11 +15,13 @@ let not = false
 export const register = (initial, acceptLocalRules, globalRules, router, notfound, middleware) => {
   currentGlobal = Array.isArray(initial) ? initial : [initial]
 
-  if (router !== null && middleware) {
+  if (router !== null) {
     router.beforeEach(async (to, from, next) => {
-      await middleware({change (a) {
-        currentGlobal = a
-      }})
+      if (middleware) {
+        await middleware({change (a) {
+          currentGlobal = a
+        }})
+      }
 
       // to be backwards compatible (notfound could be string)
       const notFoundPath = notfound.path || notfound;
