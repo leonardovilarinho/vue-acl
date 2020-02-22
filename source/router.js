@@ -11,7 +11,7 @@ import { testPermission } from './checker'
 export const upRouter = (router, currentGlobal, notfound) => {
   if (router === null)
     return
-  router.beforeEach((to, from, next) => {
+  router.beforeRouteEnter((to, from, next) => {
 
     /** @type {Array} */
     const routePermission = to.meta.rule
