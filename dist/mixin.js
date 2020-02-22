@@ -24,7 +24,7 @@ var not = false;
 var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notfound, middleware) {
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
-  if (router !== null && middleware) {
+  if (router !== null) {
     router.beforeEach(function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(to, from, next) {
         var notFoundPath, routePermission;
@@ -32,34 +32,39 @@ var register = exports.register = function register(initial, acceptLocalRules, g
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                if (!middleware) {
+                  _context.next = 3;
+                  break;
+                }
+
+                _context.next = 3;
                 return middleware({
                   change: function change(a) {
                     currentGlobal = a;
                   }
                 });
 
-              case 2:
+              case 3:
 
                 // to be backwards compatible (notfound could be string)
                 notFoundPath = notfound.path || notfound;
 
                 if (!(to.path === notFoundPath)) {
-                  _context.next = 5;
+                  _context.next = 6;
                   break;
                 }
 
                 return _context.abrupt('return', next());
 
-              case 5:
+              case 6:
                 if ('rule' in to.meta) {
-                  _context.next = 7;
+                  _context.next = 8;
                   break;
                 }
 
                 return _context.abrupt('return', console.error('[vue-acl] ' + to.path + ' not have rule'));
 
-              case 7:
+              case 8:
                 routePermission = to.meta.rule;
 
 
@@ -68,24 +73,24 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 }
 
                 if ((0, _checker.testPermission)(currentGlobal, routePermission)) {
-                  _context.next = 13;
+                  _context.next = 14;
                   break;
                 }
 
                 if (!notfound.forwardQueryParams) {
-                  _context.next = 12;
+                  _context.next = 13;
                   break;
                 }
 
                 return _context.abrupt('return', next({ path: notFoundPath, query: to.query }));
 
-              case 12:
+              case 13:
                 return _context.abrupt('return', next(notFoundPath));
 
-              case 13:
+              case 14:
                 return _context.abrupt('return', next());
 
-              case 14:
+              case 15:
               case 'end':
                 return _context.stop();
             }
