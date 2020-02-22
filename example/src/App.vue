@@ -5,8 +5,15 @@
       <router-link to="/admin">Admin page</router-link>
     </header>
 
-    {{ $acl.get }}
+    <section style="display: flex; padding: 10px">
+      <button @click="$acl.change('admin')">Turn admin</button>
+      <button @click="$acl.change('public')">Turn public</button>
+    </section>
 
+    <p style="padding: 10px">Current permission: {{ $acl.get }}</p>
+
+    <hr>
+    <p><small>Page content:</small></p>
     <router-view/>
   </div>
 </template>

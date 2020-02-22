@@ -14,11 +14,7 @@ export default new AclCreate({
   router,
   acceptLocalRules: true,
   globalRules: {
-    isAdmin: new AclRule('admin'),
-    isPublic: new AclRule('*')
-  },
-  middleware: async acl => {
-    await timeout(2000)
-    acl.change('admin')
+    isAdmin: new AclRule('admin').generate(),
+    isPublic: new AclRule('public').or('admin').generate()
   }
 })
