@@ -108,23 +108,21 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
           return false
         }
       }
-
-      EventBus.$on('vueacl-permission-changed', newPermission => {
-        currentGlobal = newPermission
-        if ('onChange' in this.$acl) {
-          this.$acl.onChange(currentGlobal)
-        }
-        this.$forceUpdate()
-      })
+    },
+    created () {
+      EventBus.$on('vueacl-permission-changed', this.vue_aclOnChange)
     },
     destroyed() {
-      EventBus.$off('vueacl-permission-changed', newPermission => {
+      EventBus.$off('vueacl-permission-changed', this.vue_aclOnChange)
+    },
+    methods: {
+      vue_aclOnChange (newPermission) {
         currentGlobal = newPermission
         if ('onChange' in this.$acl) {
           this.$acl.onChange(currentGlobal)
         }
         this.$forceUpdate()
-      })
+      }
     }
   }
 }
