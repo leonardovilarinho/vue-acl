@@ -7,14 +7,14 @@ Vue.use(AclInstaller)
 const timeout = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export default new AclCreate({
-  initial: 'public',
+  initial: 'read',
   notfound: {
     path: '/error'
   },
   router,
   acceptLocalRules: true,
   globalRules: {
-    isAdmin: new AclRule('admin').generate(),
-    isPublic: new AclRule('public').or('admin').generate()
+    isAdmin: new AclRule('read').and('write').generate(),
+    isPublic: new AclRule('read').generate()
   }
 })

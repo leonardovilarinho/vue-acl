@@ -6,8 +6,8 @@
     </header>
 
     <section style="display: flex; padding: 10px">
-      <button @click="$acl.change('admin')">Turn admin</button>
-      <button @click="$acl.change('public')">Turn public</button>
+      <button @click="$acl.change(['read', 'write'])">Turn admin</button>
+      <button @click="$acl.change('read')">Turn public</button>
     </section>
 
     <p style="padding: 10px">Current permission: {{ $acl.get }}</p>

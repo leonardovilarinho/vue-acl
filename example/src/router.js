@@ -23,7 +23,7 @@ export default new Router({
       name: 'admin',
       component: Admin,
       meta: {
-        rule: new AclRule('admin').generate()
+        rule: new AclRule('write').generate()
       }
     },
     {
