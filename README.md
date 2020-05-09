@@ -160,6 +160,8 @@ Finish, you can change current permission in any component using `change` method
 </button>
 ```
 
+You can also add a new permission during execution, taking the current one and concatenating it with the new one: `this.$acl.change(this.$acl.get.concat(['read', 'write']))`
+
 In your component can add observer for current Rule:
 ```javascript
 mounted () {
