@@ -84,7 +84,7 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
         /**
          * Check if rule is valid currently
-         * @param {string} ruleName rule name
+         * @param {string|Array} ruleName rule name
          */
         check(ruleName) {
           const hasNot = not
@@ -102,6 +102,11 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
             }
 
             const result = testPermission(this.get, self[ruleName])
+            return hasNot ? !result : result
+          }
+
+          if (Array.isArray(ruleName)) {
+            const result = testPermission(this.get, ruleName)
             return hasNot ? !result : result
           }
 
