@@ -2,7 +2,7 @@
 import Vue from 'vue'
 
 import { testPermission } from './checker'
-
+import { AclRule } from './index'
 
 
 
@@ -84,29 +84,28 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
         /**
          * Check if rule is valid currently
-         * @param {string|Array} ruleName rule name
+         * @param {string|Array|AclRule} rule rule
          */
-        check(ruleName) {
+        check(rule) {
           const hasNot = not
           not = false
 
-          if (ruleName in globalRules) {
-            const result = testPermission(this.get, globalRules[ruleName])
+          if (typeof rule === 'string' && rule in globalRules) {
+            const result = testPermission(this.get, globalRules[rule])
             return hasNot ? !result : result
           }
 
-
-          if (ruleName in self) {
+          if (typeof rule === 'string' && rule in self) {
             if (!acceptLocalRules) {
               return console.error('[vue-acl] acceptLocalRules is not enabled')
             }
 
-            const result = testPermission(this.get, self[ruleName])
+            const result = testPermission(this.get, self[rule])
             return hasNot ? !result : result
           }
 
-          if (Array.isArray(ruleName)) {
-            const result = testPermission(this.get, ruleName)
+          if (Array.isArray(rule) || rule instanceof AclRule) {
+            const result = testPermission(this.get, rule)
             return hasNot ? !result : result
           }
 

@@ -54,15 +54,15 @@ export default {
   },
   methods: {
     assignCheckConditionToWriteOnly() {
-      this.checkRuleVariable = new AclRule("write").generate();
+      this.checkRuleVariable = new AclRule("write");
       this.checkRuleInfo = "write only";
     },
     assignCheckConditionToReadAndWrite() {
-      this.checkRuleVariable = new AclRule("read").and("write").generate();
+      this.checkRuleVariable = new AclRule("read").and("write");
       this.checkRuleInfo = "read and write";
     },
     assignCheckConditionToReadOrWrite() {
-      this.checkRuleVariable = new AclRule("read").or("write").generate();
+      this.checkRuleVariable = new AclRule("read").or("write");
       this.checkRuleInfo = "read or write";
     }
   }
