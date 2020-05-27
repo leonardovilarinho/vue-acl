@@ -1,8 +1,9 @@
+import { AclRule } from './index'
 
 /**
  * Test a rule with a permission group
  * @param {Array} current current permissions
- * @param {Array} rules rule to test
+ * @param {Array|AclRule} rules rule to test
  * @return {boolean} valided rule
  */
 export const testPermission =(current, rules) => {

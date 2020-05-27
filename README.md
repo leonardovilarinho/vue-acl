@@ -93,7 +93,7 @@ export default new Router({
       name: 'notfound',
       component: NotFound,
       meta: {
-        rule: '*'
+        rule: ['*']
       }
     }
   ]
@@ -101,7 +101,7 @@ export default new Router({
 ```
 
 More details:
-- Define `rule` meta for link a route with a permission, your can use name of the global rule e.g `isPublic` or use `AclRule` for create new rule orr use `*` for define allowed route.
+- Define `rule` meta for link a route with a permission, your can use name of the global rule e.g `isPublic` or use `AclRule` for create new rule or use `[*]` for define allowed route.
 
 For finish, in your `main.js` import the `acl` and pass to Vue root instance:
 
