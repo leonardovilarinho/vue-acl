@@ -19,12 +19,6 @@ export const testPermission =(current, rules) => {
   }
 
   let hasAllowed = false;
-  rules.forEach((rule) => {
-    
-  });
-
-  if (hasAllowed) return true;
-
   let checkAnds;
   // If current rule is an array then use the Array.prototype.include
   if (Array.isArray(current)) {
