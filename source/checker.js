@@ -6,8 +6,12 @@
  * @return {boolean} valided rule
  */
 export const testPermission =(current, rules) => {
+  if (rule === '*') {
+    return true;
+  }
+  
   if (rules.generate === undefined && !Array.isArray(rules)) {
-    return console.error('[vue-acl] you have invalid rules');
+    return console.error('[vue-acl] you have invalid rules: ' + JSON.stringify(rules));
   }
 
   if (!Array.isArray(rules)) {
@@ -16,7 +20,7 @@ export const testPermission =(current, rules) => {
 
   let hasAllowed = false;
   rules.forEach((rule) => {
-    if (rule === '*') hasAllowed = true;
+    
   });
 
   if (hasAllowed) return true;
