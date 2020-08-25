@@ -37,7 +37,7 @@ export default new AclCreate({
   },
   middleware: async acl => {
     await timeout(2000) // call your api
-    acl.change('admin')
+    acl.change('admin', { name: 'page-not-authorized' })
   }
 })
 ```
