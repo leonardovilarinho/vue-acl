@@ -18,14 +18,16 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
   if (router !== null) {
     router.beforeEach(async (to, from, next) => {
       if (middleware) {
-        await middleware({change (a) {
+        await middleware({change (a, b=notfound) {
           currentGlobal = a
+          notfound = b
         }})
       }
 
-      // to be backwards compatible (notfound could be string)
-      const notFoundPath = notfound.path || notfound;
-      if (to.path === notFoundPath) return next()
+      const forwardQueryParams = notfound.forwardQueryParams
+      const notFound = router.resolve(notfound).resolved
+
+      if (to === notFound) return next()
 
       /** @type {Array} */
       if (!('rule' in to.meta)) {
@@ -39,10 +41,10 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
 
       if (!testPermission(currentGlobal, routePermission)) {
         // check if forwardQueryParams is set
-        if (notfound.forwardQueryParams) {
-          return next({path: notFoundPath, query: to.query})
+        if (forwardQueryParams) {
+          notFound.query = to.query
         }
-        return next(notFoundPath)
+        return next(notFound)
       }
       return next()
     })
