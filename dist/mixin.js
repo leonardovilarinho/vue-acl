@@ -21,7 +21,7 @@ var EventBus = new _vue2.default();
 var currentGlobal = [];
 var not = false;
 
-var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notfound, middleware) {
+var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notFoundOptions, middleware) {
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
   if (router !== null) {
@@ -40,18 +40,18 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 _context.next = 3;
                 return middleware({
                   change: function change(a) {
-                    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : notfound;
+                    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : notFoundOptions;
 
                     currentGlobal = a;
-                    notfound = b;
+                    notFoundOptions = b;
                   }
                 });
 
               case 3:
-                forwardQueryParams = notfound.forwardQueryParams;
-                notFound = router.resolve(notfound).resolved;
+                forwardQueryParams = notFoundOptions.forwardQueryParams;
+                notFound = router.resolve(notFoundOptions).resolved;
 
-                if (!(to === notFound)) {
+                if (!(to.path === notFound.path)) {
                   _context.next = 7;
                   break;
                 }
@@ -81,7 +81,8 @@ var register = exports.register = function register(initial, acceptLocalRules, g
 
                 // check if forwardQueryParams is set
                 if (forwardQueryParams) {
-                  notFound.query = to.query;
+                  notFoundOptions.query = to.query;
+                  notFound = router.resolve(notFoundOptions).resolved;
                 }
 
                 notFound.meta.from = to;

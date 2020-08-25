@@ -12,22 +12,22 @@ let currentGlobal = []
 let not = false
 
 
-export const register = (initial, acceptLocalRules, globalRules, router, notfound, middleware) => {
+export const register = (initial, acceptLocalRules, globalRules, router, notFoundOptions, middleware) => {
   currentGlobal = Array.isArray(initial) ? initial : [initial]
 
   if (router !== null) {
     router.beforeEach(async (to, from, next) => {
       if (middleware) {
-        await middleware({change (a, b=notfound) {
+        await middleware({change (a, b=notFoundOptions) {
           currentGlobal = a
-          notfound = b
+          notFoundOptions = b
         }})
       }
 
-      const forwardQueryParams = notfound.forwardQueryParams
-      const notFound = router.resolve(notfound).resolved
+      const forwardQueryParams = notFoundOptions.forwardQueryParams
+      let notFound = router.resolve(notFoundOptions).resolved
 
-      if (to === notFound) return next()
+      if (to.path === notFound.path) return next()
 
       /** @type {Array} */
       if (!('rule' in to.meta)) {
@@ -42,7 +42,8 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
       if (!testPermission(currentGlobal, routePermission)) {
         // check if forwardQueryParams is set
         if (forwardQueryParams) {
-          notFound.query = to.query
+          notFoundOptions.query = to.query
+          notFound = router.resolve(notFoundOptions).resolved
         }
 
         notFound.meta.from = to
