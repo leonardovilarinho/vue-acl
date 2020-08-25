@@ -75,7 +75,7 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 }
 
                 if ((0, _checker.testPermission)(currentGlobal, routePermission)) {
-                  _context.next = 14;
+                  _context.next = 15;
                   break;
                 }
 
@@ -83,12 +83,15 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 if (forwardQueryParams) {
                   notFound.query = to.query;
                 }
+
+                notFound.meta.from = to;
+
                 return _context.abrupt('return', next(notFound));
 
-              case 14:
+              case 15:
                 return _context.abrupt('return', next());
 
-              case 15:
+              case 16:
               case 'end':
                 return _context.stop();
             }

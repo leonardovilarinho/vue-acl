@@ -44,6 +44,9 @@ export const register = (initial, acceptLocalRules, globalRules, router, notfoun
         if (forwardQueryParams) {
           notFound.query = to.query
         }
+
+        notFound.meta.from = to
+
         return next(notFound)
       }
       return next()
