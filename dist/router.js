@@ -22,7 +22,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // @ts-check
 var upRouter = exports.upRouter = function upRouter(router, currentGlobal, notfound) {
   if (router === null) return;
-  router.beforeEach(function (to, from, next) {
+  router.beforeRouteEnter(function (to, from, next) {
 
     /** @type {Array} */
     var routePermission = to.meta.rule;

@@ -21,13 +21,13 @@ var EventBus = new _vue2.default();
 var currentGlobal = [];
 var not = false;
 
-var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notfound, middleware) {
+var register = exports.register = function register(initial, acceptLocalRules, globalRules, router, notFoundOptions, middleware) {
   currentGlobal = Array.isArray(initial) ? initial : [initial];
 
   if (router !== null) {
     router.beforeEach(function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(to, from, next) {
-        var notFoundPath, routePermission;
+        var forwardQueryParams, notFound, routePermission;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -40,31 +40,33 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 _context.next = 3;
                 return middleware({
                   change: function change(a) {
+                    var b = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : notFoundOptions;
+
                     currentGlobal = a;
+                    notFoundOptions = b;
                   }
                 });
 
               case 3:
+                forwardQueryParams = notFoundOptions.forwardQueryParams;
+                notFound = router.resolve(notFoundOptions).resolved;
 
-                // to be backwards compatible (notfound could be string)
-                notFoundPath = notfound.path || notfound;
-
-                if (!(to.path === notFoundPath)) {
-                  _context.next = 6;
+                if (!(to.path === notFound.path)) {
+                  _context.next = 7;
                   break;
                 }
 
                 return _context.abrupt('return', next());
 
-              case 6:
+              case 7:
                 if ('rule' in to.meta) {
-                  _context.next = 8;
+                  _context.next = 9;
                   break;
                 }
 
                 return _context.abrupt('return', console.error('[vue-acl] ' + to.path + ' not have rule'));
 
-              case 8:
+              case 9:
                 routePermission = to.meta.rule;
 
 
@@ -73,24 +75,24 @@ var register = exports.register = function register(initial, acceptLocalRules, g
                 }
 
                 if ((0, _checker.testPermission)(currentGlobal, routePermission)) {
-                  _context.next = 14;
+                  _context.next = 15;
                   break;
                 }
 
-                if (!notfound.forwardQueryParams) {
-                  _context.next = 13;
-                  break;
+                // check if forwardQueryParams is set
+                if (forwardQueryParams) {
+                  notFoundOptions.query = to.query;
+                  notFound = router.resolve(notFoundOptions).resolved;
                 }
 
-                return _context.abrupt('return', next({ path: notFoundPath, query: to.query }));
+                notFound.meta.from = to;
 
-              case 13:
-                return _context.abrupt('return', next(notFoundPath));
-
-              case 14:
-                return _context.abrupt('return', next());
+                return _context.abrupt('return', next(notFound));
 
               case 15:
+                return _context.abrupt('return', next());
+
+              case 16:
               case 'end':
                 return _context.stop();
             }
@@ -109,8 +111,6 @@ var register = exports.register = function register(initial, acceptLocalRules, g
      * Called before create component
      */
     beforeCreate: function beforeCreate() {
-      var _this = this;
-
       var self = this;
 
       this.$acl = {
@@ -166,25 +166,22 @@ var register = exports.register = function register(initial, acceptLocalRules, g
           return false;
         }
       };
-
-      EventBus.$on('vueacl-permission-changed', function (newPermission) {
-        currentGlobal = newPermission;
-        if ('onChange' in _this.$acl) {
-          _this.$acl.onChange(currentGlobal);
-        }
-        _this.$forceUpdate();
-      });
+    },
+    created: function created() {
+      EventBus.$on('vueacl-permission-changed', this.vue_aclOnChange);
     },
     destroyed: function destroyed() {
-      var _this2 = this;
+      EventBus.$off('vueacl-permission-changed', this.vue_aclOnChange);
+    },
 
-      EventBus.$off('vueacl-permission-changed', function (newPermission) {
+    methods: {
+      vue_aclOnChange: function vue_aclOnChange(newPermission) {
         currentGlobal = newPermission;
-        if ('onChange' in _this2.$acl) {
-          _this2.$acl.onChange(currentGlobal);
+        if ('onChange' in this.$acl) {
+          this.$acl.onChange(currentGlobal);
         }
-        _this2.$forceUpdate();
-      });
+        this.$forceUpdate();
+      }
     }
   };
 };
